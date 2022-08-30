@@ -1,10 +1,81 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <style>
+      .navbar {
+        width: 500px;
+        height: 76px;
+        border: 2px solid;
+        margin: 32px auto 64px auto;
+        padding: 12px 0 12px 0;
+        text-align: center;
+        font-size: 44px;
+        font-family: Georgia, 'Times New Roman', Times, serif;
+      }
+      .nav-links {
+        font-style: italic;
+        font-size: 10px;
+        padding-top: 6px;
+      }
+      a {
+        text-decoration: none;
+      }
+      .images {
+        width: 564px;
+        overflow: hidden;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .image {
+        height: 564px;
+        display: block;
+        position: relative;
+        margin: 8px 0 8px 0;
+      }
+      .footer {
+        margin: 24px 0 24px 0;
+        text-align: center;
+        font-style: italic;
+        font-size: 8px;
+        color: dimgray;
+      }
+      .footer-links {
+        margin-top: 16px;
+      }
+      .footer-image {
+        width: 14px;
+        height: 14px;
+      }
+    </style>
+  </head>
   <body>
-    <h1>My First Heading</h1>
-    <p>My first paragraph.</p>
-    <img src="https://csci571.com/hw/hw3/ScreenShot1.png" alt="beach" align="center">
-    <img src="https://csci571.com/hw/hw3/ScreenShot2.png" alt="road" align="center">
-    <img src="https://csci571.com/hw/hw3/ScreenShot3.png" alt="lake" align="center">
+    <div class="navbar">
+      Paul James
+      <div class="nav-links">
+        <a href="page2.html" target=”_blank” rel="noreferrer" style="color: black;">home</a>
+        <a href="page2.html" target=”_blank” rel="noreferrer" style="padding: 0 6px 0 12px; color: gray;">nature</a>
+        <a href="page2.html" target=”_blank” rel="noreferrer" style="padding: 0 12px 0 6px; color: gray;">urban</a>
+        <a href="page2.html" target=”_blank” rel="noreferrer" style="color: gray;">bio</a>
+      </div>
+    </div>
+    <div class="images">
+      <img src="https://csci571.com/hw/hw3/images/pier.jpg" alt="pier" class="image" style="left: -218px">
+      <img src="https://csci571.com/hw/hw3/images/road.jpeg" alt="road" class="image" style="left: -282px">
+      <img src="https://csci571.com/hw/hw3/images/lake.jpg" alt="lake" class="image" style="left: -94px">
+    </div>
+    <div class="footer">
+      Ⓒ 2023 by Paul James
+      <div class="footer-links">
+        <a href="https://www.facebook.com" target=”_blank” rel="noreferrer">
+          <img src="https://csci571.com/hw/hw3/images/facebook.png" alt="facebook" class="footer-image">
+        </a>
+        <a href="https://twitter.com" target=”_blank” rel="noreferrer">
+          <img src="https://csci571.com/hw/hw3/images/twitter.png" alt="twitter" class="footer-image" style="padding: 0 12px 0 12px">
+        </a>
+        <a href="https://www.instagram.com" target=”_blank” rel="noreferrer">
+          <img src="https://csci571.com/hw/hw3/images/instagram.png" alt="instagram" class="footer-image">
+        </a>
+      </div>
+    </div>
   </body>
 </html>
