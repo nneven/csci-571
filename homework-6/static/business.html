@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/business.css">
+  </head>
+  <body>
+    <div class="form-container">
+      <div class="banner">
+        <img src="/static/banner.jpeg" alt="banner">
+        <div class="title">
+          Business Search
+        </div>
+        <div class="description">
+          Fill our the form to get businesses near you!
+        </div>
+      </div>
+      <div class="form">
+        <form>
+          <div class="keyword">
+            <label for="keyword">Keyword <span class="star">*</span></label><br>
+            <input type="text" id="keyword" name="keyword"><br>
+          </div>
+          <span class="row-2">
+            <div class="distance">
+              <label for="distance">Distance(miles)</label><br>
+              <input type="number" id="distance" name="distance" min="1" max="25">
+            </div>
+            <div class="category">
+              <label for="category">Category <span class="star">*</span></label><br>
+              <select name="category" id="category">
+                <option value="default">Default</option>
+                <option value="a&e">Arts & Entertainment</option>
+                <option value="h&m">Health & Medical</option>
+                <option value="h&t">Hotels & Travel</option>
+                <option value="food">Food</option>
+                <option value="ps">Professional Services</option>
+              </select>
+            </div>
+          </span>
+          <div class="location">
+            <label for="location">Location <span class="star">*</span></label><br>
+            <input type="text" id="location" name="location">
+          </div>
+          <div class="auto-detect">
+            <label for="auto-detect">Want us to auto-detect your location? Check here</label>
+            <input type="checkbox" id="auto-detect" name="auto-detect" value="true">
+          </div>
+          <div class="submit-clear">
+            <input type="submit" value="SUBMIT">
+            <input type="reset" value="CLEAR">
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
