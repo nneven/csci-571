@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="/static/form.css">
+    <link rel="stylesheet" href="/static/table.css">
     <link rel="stylesheet" href="/static/business.css">
   </head>
   <body>
@@ -15,10 +17,10 @@
         </div>
       </div>
       <div class="form">
-        <form>
+        <form onsubmit="search(); return false">
           <div class="keyword">
             <label for="keyword">Keyword <span class="star">*</span></label><br>
-            <input type="text" id="keyword" name="keyword"><br>
+            <input type="text" id="keyword" name="keyword" required><br>
           </div>
           <span class="row-2">
             <div class="distance">
@@ -27,30 +29,94 @@
             </div>
             <div class="category">
               <label for="category">Category <span class="star">*</span></label><br>
-              <select name="category" id="category">
-                <option value="default">Default</option>
-                <option value="a&e">Arts & Entertainment</option>
-                <option value="h&m">Health & Medical</option>
-                <option value="h&t">Hotels & Travel</option>
+              <select name="category" id="category" required>
+                <option value="all">Default</option>
+                <option value="arts">Arts & Entertainment</option>
+                <option value="health">Health & Medical</option>
+                <option value="hotelstravel">Hotels & Travel</option>
                 <option value="food">Food</option>
-                <option value="ps">Professional Services</option>
+                <option value="professional">Professional Services</option>
               </select>
             </div>
           </span>
           <div class="location">
             <label for="location">Location <span class="star">*</span></label><br>
-            <input type="text" id="location" name="location">
+            <input type="text" id="location" name="location" required>
           </div>
           <div class="auto-detect">
             <label for="auto-detect">Want us to auto-detect your location? Check here</label>
-            <input type="checkbox" id="auto-detect" name="auto-detect" value="true">
+            <input type="checkbox" id="auto-detect" name="auto-detect" onclick="checkbox()">
           </div>
           <div class="submit-clear">
             <input type="submit" value="SUBMIT">
-            <input type="reset" value="CLEAR">
+            <input type="button" value="CLEAR" onclick="resetForm()">
           </div>
         </form>
       </div>
     </div>
+    <div class="results" id="results">
+    </div>
+    <script>
+      function resetForm() {
+        document.getElementById("keyword").value = ""
+        document.getElementById("distance").value = ""
+        document.getElementById("category").selectedIndex = 0
+        document.getElementById("location").value = ""
+      }
+
+      function checkbox() {
+        let autoDetect = document.getElementById("auto-detect")
+        if (autoDetect.checked) {
+          document.getElementById("location").value = ""
+          document.getElementById("location").disabled = true
+        } else {
+          document.getElementById("location").disabled = false
+        }
+      }
+
+      async function search() {
+        let keyword = document.getElementById("keyword").value
+        let distance = document.getElementById("distance").value
+        let category = document.getElementById("category").value
+        let autoDetect = document.getElementById("auto-detect")
+        let latitude = "", longitude = ""
+        if (autoDetect.checked) {
+          await fetch("https://ipinfo.io?token=41eab4d12ac318")
+            .then((response) => response.json())
+            .then((data) => {
+              data = data.loc.split(",")
+              latitude = data[0]
+              longitude = data[1]
+            })
+        } else {
+          let location = document.getElementById("location").value.replace(" ", "+")
+          await fetch("https://maps.googleapis.com/maps/api/geocode/json?address=" + location + "&key=AIzaSyDZQNW6Ut1G3ySELQPBUsI6JpdatAUyxvo")
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.results.length) {
+                data = data.results[0].geometry.location
+                latitude = String(data.lat)
+                longitude = String(data.lng)
+              }
+            })
+        }
+        // console.log(keyword, distance, category, latitude, longitude)
+        let request = `term=${keyword}&latitude=${latitude}&longitude=${longitude}&category=${category}`
+        if (distance) request += `&radius=${parseInt(distance) * 1600}`
+        console.log(request)
+
+        await fetch("http://localhost:8080/yelp/search/" + request)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            document.getElementById("results").innerHTML = ""
+            if (data.error) {
+              document.getElementById("results").innerHTML = "<div class='no-results'>No record has been found</div>"
+            } else {
+              let businesses = data.businesses
+            }
+          })
+      }
+    </script>
   </body>
 </html>

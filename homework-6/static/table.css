@@ -1,0 +1,13 @@
+.results {
+  margin-top: 36px;
+}
+
+.no-results {
+  width: 700px;
+  margin: auto;
+  text-align: center;
+  background-color: white;
+  border: solid;
+  border-width: 1px;
+  border-color: lightgrey;
+}
