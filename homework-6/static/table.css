@@ -11,3 +11,13 @@
   border-width: 1px;
   border-color: lightgrey;
 }
+
+.table {
+  margin: auto;
+  margin-top: 128px;
+}
+
+.table > tbody > tr > th {
+  height: 40px;
+  background-color: royalblue;
+}

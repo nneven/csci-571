@@ -54,8 +54,7 @@
         </form>
       </div>
     </div>
-    <div class="results" id="results">
-    </div>
+    <div class="results" id="results"></div>
     <script>
       function resetForm() {
         document.getElementById("keyword").value = ""
@@ -114,6 +113,15 @@
               document.getElementById("results").innerHTML = "<div class='no-results'>No record has been found</div>"
             } else {
               let businesses = data.businesses
+              document.getElementById("results").innerHTML = `<table class="table" id="table">
+                                                                <tr>
+                                                                  <th style="width: 60px">No.</th>
+                                                                  <th style="width: 120px">Image</th>
+                                                                  <th style="width: 600px">Business Name</th>
+                                                                  <th style="width: 160px">Rating</th>
+                                                                  <th style="width: 160px">Distance (miles)</th>
+                                                                </tr>
+                                                              </table>`
             }
           })
       }
