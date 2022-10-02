@@ -110,7 +110,7 @@
           .then((data) => {
             console.log(data)
             document.getElementById("results").innerHTML = ""
-            if (data.error) {
+            if (data.error || data.businesses.length === 0) {
               document.getElementById("results").innerHTML = "<div class='no-results'>No record has been found</div>"
             } else {
               let businesses = data.businesses
