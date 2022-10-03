@@ -1,0 +1,42 @@
+.business-header {
+  margin: auto;
+  padding-top: 32px;
+  padding-bottom: 16px;
+  width: 680px;
+  text-align: center;
+  border-bottom: solid;
+  border-width: 1px;
+  border-color: lightgrey;
+}
+
+.business-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 32px;
+}
+
+.detail-container {
+  margin-bottom: 32px;
+  margin-left: 16px;
+}
+
+.detail {
+  padding-top: 6px;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.images {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: auto;
+  padding-bottom: 16px;
+  width: 700px;
+}
+
+.image {
+  margin: 0 auto;
+  border: solid;
+  border-width: 1px;
+  border-color: lightgrey;
+}

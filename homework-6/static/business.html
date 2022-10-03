@@ -55,12 +55,15 @@
       </div>
     </div>
     <div class="results" id="results"></div>
+    <div class="business" id="business"></div>
     <script>
       function resetForm() {
         document.getElementById("keyword").value = ""
         document.getElementById("distance").value = ""
         document.getElementById("category").selectedIndex = 0
         document.getElementById("location").value = ""
+        document.getElementById("results").innerHTML = ""
+        document.getElementById("business").innerHTML = ""
       }
 
       function checkbox() {
@@ -109,19 +112,92 @@
           .then((data) => {
             console.log(data)
             document.getElementById("results").innerHTML = ""
+            document.getElementById("business").innerHTML = ""
             if (data.error || data.businesses.length === 0) {
               document.getElementById("results").innerHTML = "<div class='no-results'>No record has been found</div>"
             } else {
-              let businesses = data.businesses
+              const businesses = data.businesses
               document.getElementById("results").innerHTML = `<table class="table" id="table">
                                                                 <tr>
                                                                   <th style="width: 60px">No.</th>
                                                                   <th style="width: 120px">Image</th>
                                                                   <th style="width: 600px">Business Name</th>
-                                                                  <th style="width: 160px">Rating</th>
-                                                                  <th style="width: 160px">Distance (miles)</th>
+                                                                  <th style="width: 200px">Rating</th>
+                                                                  <th style="width: 200px">Distance (miles)</th>
                                                                 </tr>
                                                               </table>`
+
+              let table = document.getElementById("table")
+              for (let i = 0; i < businesses.length; i++) {
+                let row = table.insertRow(-1)
+                let noCell = row.insertCell(0)
+                let imageCell = row.insertCell(1)
+                let businessCell = row.insertCell(2)
+                let ratingCell = row.insertCell(3)
+                let distanceCell = row.insertCell(4)
+                
+                noCell.innerHTML = String(i + 1)
+                imageCell.innerHTML = `<img src=${businesses[i].image_url} alt="business-image" height="120" width="120"/>`
+                businessCell.innerHTML = `<span class="business-cell" onClick=getBusiness("${businesses[i].id}")>${businesses[i].name} - ${businesses[i].location.city}</span>`
+                ratingCell.innerHTML = String(businesses[i].rating)
+                distanceCell.innerHTML = String((businesses[i].distance / 1600).toFixed(2))
+              }
+            }
+          })
+      }
+      
+      async function getBusiness(id) {
+        await fetch("http://localhost:8080/yelp/" + id)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            let business = document.getElementById("business")
+            business.style = "margin: auto; margin-top: 36px; width: 720px; background-color: white; font-size: 18px; font-weight: bold;"
+            business.innerHTML = ""
+            business.innerHTML += `<div class="business-header">${data.name}</div>`
+            business.innerHTML += `<div class="business-details" id="business-details"></div>`
+            business.innerHTML += `<div class="images" id="images"></div>`
+            
+            let details = document.getElementById("business-details")
+            if (data.hours && data.hours[0]) {
+              let status = ""
+              if (data.hours[0].is_open_now) status += "<div class='detail' style='background-color: red; padding: 8px 12px; width: fit-content; border-radius: 12px'>Closed</div>"
+              else status += "<div class='detail' style='background-color: green; padding: 8px 12px; width: fit-content; border-radius: 12px'>Open Now</div>"
+              details.innerHTML += `<div class="detail-container">Status<br>${status}</div>`
+            }
+            if (data.categories) {
+              let categories = ""
+              data.categories.forEach((c, i) => {
+                if (i === 0) categories += c.title
+                else categories += " | " + c.title
+              })
+              details.innerHTML += `<div class="detail-container">Category<br><div class="detail">${categories}</div>`
+            }
+            if (data.location.display_address) {
+              let address = ""
+              data.location.display_address.forEach((a, i) => {
+                if (i === 0) address += a
+                else address += " " + a
+              })
+              details.innerHTML += `<div class="detail-container">Address<br><div class="detail">${address}<div></div>`
+            }
+            if (data.display_phone) details.innerHTML += `<div class="detail-container">Phone Number<br><div class="detail">${data.display_phone}<div></div>`
+            if (data.transactions.length) {
+              let transactions = ""
+              data.transactions.forEach((t, i) => {
+                if (i === 0) transactions += t.charAt(0).toUpperCase() + t.slice(1)
+                else transactions += " | " + t.charAt(0).toUpperCase() + t.slice(1)
+              })
+              details.innerHTML += `<div class="detail-container">Transactions Supported<br><div class="detail">${transactions}<div></div>`
+            }
+            if (data.price) details.innerHTML += `<div class="detail-container">Price<br><div class="detail">${data.price}<div></div>`
+            if (data.url) details.innerHTML += `<div class="detail-container">More Info<br><a class="detail" href="${data.url}">Yelp<div></div>`
+
+            let images = document.getElementById("images")
+            if (data.photos.length) {
+              data.photos.forEach(p => {
+                images.innerHTML += `<img class="image" src=${p} alt="business-image" width="220" />`
+              })
             }
           })
       }

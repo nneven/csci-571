@@ -15,9 +15,33 @@
 .table {
   margin: auto;
   margin-top: 128px;
+  border-collapse: collapse;
 }
 
 .table > tbody > tr > th {
   height: 40px;
   background-color: royalblue;
+  border: solid;
+  border-width: 2px;
+  border-color: lightgrey;
+}
+
+.table > tbody > tr {
+  text-align: center;
+  background-color: white;
+}
+
+.table > tbody > tr > td {
+  height: 40px;
+  border: solid;
+  border-width: 2px;
+  border-color: lightgrey;
+}
+
+.table > tbody > tr > td > img {
+  padding: 4px;
+}
+
+.business-cell:hover {
+  text-decoration: underline;
 }
