@@ -156,7 +156,7 @@
             let business = document.getElementById("business")
             business.style = "margin: auto; margin-top: 36px; width: 720px; background-color: white; font-size: 18px; font-weight: bold;"
             business.innerHTML = ""
-            business.innerHTML += `<div class="business-header">${data.name}</div>`
+            business.innerHTML += `<div class="business-header" id="business-header">${data.name}</div>`
             business.innerHTML += `<div class="business-details" id="business-details"></div>`
             business.innerHTML += `<div class="images" id="images"></div>`
             
@@ -205,7 +205,7 @@
               })
             }
           })
-        window.location.replace(window.location.origin + '#business')
+        window.location.replace(window.location.origin + '#business-header')
       }
 
       function sortTable(n) {
