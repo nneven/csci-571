@@ -25,7 +25,7 @@
           <span class="row-2">
             <div class="distance">
               <label for="distance">Distance(miles)</label><br>
-              <input type="number" id="distance" name="distance" min="1" max="25">
+              <input type="number" id="distance" name="distance" value="10" min="1" max="25">
             </div>
             <div class="category">
               <label for="category">Category <span class="star">*</span></label><br>
@@ -59,11 +59,12 @@
     <script>
       function resetForm() {
         document.getElementById("keyword").value = ""
-        document.getElementById("distance").value = ""
+        document.getElementById("distance").value = "10"
         document.getElementById("category").selectedIndex = 0
         document.getElementById("location").value = ""
         document.getElementById("results").innerHTML = ""
         document.getElementById("business").innerHTML = ""
+        window.location.replace(window.location.origin)
       }
 
       function checkbox() {
@@ -121,9 +122,9 @@
                                                                 <tr>
                                                                   <th style="width: 60px">No.</th>
                                                                   <th style="width: 120px">Image</th>
-                                                                  <th style="width: 600px">Business Name</th>
-                                                                  <th style="width: 200px">Rating</th>
-                                                                  <th style="width: 200px">Distance (miles)</th>
+                                                                  <th style="width: 600px" onclick="sortTable(2)">Business Name</th>
+                                                                  <th style="width: 200px" onclick="sortTable(3)">Rating</th>
+                                                                  <th style="width: 200px" onclick="sortTable(4)">Distance (miles)</th>
                                                                 </tr>
                                                               </table>`
 
@@ -138,12 +139,13 @@
                 
                 noCell.innerHTML = String(i + 1)
                 imageCell.innerHTML = `<img src=${businesses[i].image_url} alt="business-image" height="120" width="120"/>`
-                businessCell.innerHTML = `<span class="business-cell" onClick=getBusiness("${businesses[i].id}")>${businesses[i].name} - ${businesses[i].location.city}</span>`
-                ratingCell.innerHTML = String(businesses[i].rating)
-                distanceCell.innerHTML = String((businesses[i].distance / 1600).toFixed(2))
+                businessCell.innerHTML = `<span class="business-cell" onClick=getBusiness("${businesses[i].id}")>${businesses[i].name}</span>`
+                ratingCell.innerHTML = `<span class="rating-cell">${String(businesses[i].rating)}</span>`
+                distanceCell.innerHTML = `<span class="distance-cell">${String((businesses[i].distance / 1600).toFixed(2))}</span>`
               }
             }
           })
+        window.location.replace(window.location.origin + '#results')
       }
       
       async function getBusiness(id) {
@@ -161,8 +163,8 @@
             let details = document.getElementById("business-details")
             if (data.hours && data.hours[0]) {
               let status = ""
-              if (data.hours[0].is_open_now) status += "<div class='detail' style='background-color: red; padding: 8px 12px; width: fit-content; border-radius: 12px'>Closed</div>"
-              else status += "<div class='detail' style='background-color: green; padding: 8px 12px; width: fit-content; border-radius: 12px'>Open Now</div>"
+              if (data.hours[0].is_open_now) status += "<div class='detail' style='background-color: green; padding: 8px 12px; width: fit-content; border-radius: 12px'>Open Now</div>"
+              else status += "<div class='detail' style='background-color: red; padding: 8px 12px; width: fit-content; border-radius: 12px'>Closed</div>"
               details.innerHTML += `<div class="detail-container">Status<br>${status}</div>`
             }
             if (data.categories) {
@@ -191,15 +193,57 @@
               details.innerHTML += `<div class="detail-container">Transactions Supported<br><div class="detail">${transactions}<div></div>`
             }
             if (data.price) details.innerHTML += `<div class="detail-container">Price<br><div class="detail">${data.price}<div></div>`
-            if (data.url) details.innerHTML += `<div class="detail-container">More Info<br><a class="detail" href="${data.url}">Yelp<div></div>`
+            if (data.url) details.innerHTML += `<div class="detail-container">More Info<br><a class="detail" href="${data.url}" target="_blank">Yelp<div></div>`
 
             let images = document.getElementById("images")
             if (data.photos.length) {
-              data.photos.forEach(p => {
-                images.innerHTML += `<img class="image" src=${p} alt="business-image" width="220" />`
+              data.photos.forEach((p, i) => {
+                images.innerHTML += `<div>
+                                      <img class="image" src=${p} alt="business-image" width="220" />
+                                      <span>Photo ${i}<span>
+                                    </div>`
               })
             }
           })
+        window.location.replace(window.location.origin + '#business')
+      }
+
+      function sortTable(n) {
+        let table = document.getElementById("table")
+        let rows = table.rows
+        let values = []
+        for (let i = 1; i < rows.length; i++) {
+          values.push({index: i, value: rows[i].cells[n].innerText})
+        }
+
+        if (n == 2) {
+          values.sort((a, b) => {
+            const valueA = a.value.toLowerCase()
+            const valueB = b.value.toLowerCase()
+            return (valueA < valueB) ? -1 : (valueA > valueB) ? 1 : 0
+          })
+        } else {
+          values.sort((a, b) => Number(a.value) - Number(b.value))
+        }
+        
+        let alreadySorted = true
+        for (let i = 0; i < values.length; i++) {
+          if (values[i].index !== i + 1) alreadySorted = false
+        }
+        if (alreadySorted) values.reverse()
+
+        let sortedRows = [rows[0]]
+        for (let i = 0; i < values.length; i++) {
+          let row = rows[values[i].index]
+          row.firstChild.innerHTML = i + 1
+          sortedRows.push(row)
+        }
+
+        table.innerHTML = ""
+        for (let i = 0; i < sortedRows.length; i++) {
+          let row = table.insertRow(-1)
+          row.innerHTML = sortedRows[i].innerHTML
+        }
       }
     </script>
   </body>

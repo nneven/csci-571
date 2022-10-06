@@ -29,6 +29,7 @@
 .images {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  column-gap: 8px;
   margin: auto;
   padding-bottom: 16px;
   width: 700px;
@@ -36,7 +37,24 @@
 
 .image {
   margin: 0 auto;
+  width: 100%;
+  padding-bottom: 36px;
+}
+
+.images > div {
   border: solid;
   border-width: 1px;
-  border-color: lightgrey;
+  border-color: lightgray;
+  position: relative;
+}
+
+.images > div > span {
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  right: 40%;
+  padding-bottom: 6px;
 }
