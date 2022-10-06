@@ -48,6 +48,10 @@
   position: relative;
 }
 
+.images > div:hover {
+  border-color: gray;
+}
+
 .images > div > span {
   font-size: 14px;
   font-weight: normal;

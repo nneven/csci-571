@@ -1,4 +1,4 @@
-#!/Users/niconeven/Archives/school/nneven.github.io/hw5/python-docs-samples/appengine/standard_python3/hello_world/env/bin/python3
+#!/Users/niconeven/Archives/school/nneven.github.io/homework-6/env/bin/python3.10
 # -*- coding: utf-8 -*-
 import re
 import sys

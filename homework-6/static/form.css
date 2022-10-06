@@ -120,6 +120,10 @@ body {
   border-color: darkblue;
 }
 
+.form input[type=submit]:hover {
+  background-color: rgb(88, 122, 222);
+}
+
 .form input[type=button] {
   font-size: 16px;
   color: white;
@@ -131,6 +135,10 @@ body {
   border-bottom: solid;
   border-width: 4px;
   border-color: darkorange;
+}
+
+.form input[type=button]:hover {
+  background-color: rgb(228, 148, 0);
 }
 
 .star {

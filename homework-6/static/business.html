@@ -108,7 +108,8 @@
         if (distance) request += `&radius=${parseInt(distance) * 1600}`
         console.log(request)
 
-        await fetch("http://localhost:8080/yelp/search/" + request)
+        // await fetch("http://localhost:8080/yelp/search/" + request)
+        await fetch("https://csci-571-363723.wl.r.appspot.com/yelp/search/" + request)
           .then((response) => response.json())
           .then((data) => {
             console.log(data)
@@ -122,9 +123,9 @@
                                                                 <tr>
                                                                   <th style="width: 60px">No.</th>
                                                                   <th style="width: 120px">Image</th>
-                                                                  <th style="width: 600px" onclick="sortTable(2)">Business Name</th>
-                                                                  <th style="width: 200px" onclick="sortTable(3)">Rating</th>
-                                                                  <th style="width: 200px" onclick="sortTable(4)">Distance (miles)</th>
+                                                                  <th style="width: 600px; cursor: pointer;" onclick="sortTable(2)">Business Name</th>
+                                                                  <th style="width: 200px; cursor: pointer;" onclick="sortTable(3)">Rating</th>
+                                                                  <th style="width: 200px; cursor: pointer;" onclick="sortTable(4)">Distance (miles)</th>
                                                                 </tr>
                                                               </table>`
 
@@ -144,12 +145,13 @@
                 distanceCell.innerHTML = `<span class="distance-cell">${String((businesses[i].distance / 1600).toFixed(2))}</span>`
               }
             }
+            window.location.replace(window.location.origin + '#results')
           })
-        window.location.replace(window.location.origin + '#results')
       }
       
       async function getBusiness(id) {
-        await fetch("http://localhost:8080/yelp/" + id)
+        // await fetch("http://localhost:8080/yelp/" + id)
+        await fetch("https://csci-571-363723.wl.r.appspot.com/yelp/" + id)
           .then((response) => response.json())
           .then((data) => {
             console.log(data)
@@ -159,6 +161,7 @@
             business.innerHTML += `<div class="business-header" id="business-header">${data.name}</div>`
             business.innerHTML += `<div class="business-details" id="business-details"></div>`
             business.innerHTML += `<div class="images" id="images"></div>`
+            business.innerHTML += `<div class="bottom" id="bottom"></div>`
             
             let details = document.getElementById("business-details")
             if (data.hours && data.hours[0]) {
@@ -193,7 +196,7 @@
               details.innerHTML += `<div class="detail-container">Transactions Supported<br><div class="detail">${transactions}<div></div>`
             }
             if (data.price) details.innerHTML += `<div class="detail-container">Price<br><div class="detail">${data.price}<div></div>`
-            if (data.url) details.innerHTML += `<div class="detail-container">More Info<br><a class="detail" href="${data.url}" target="_blank">Yelp<div></div>`
+            if (data.url) details.innerHTML += `<div class="detail-container">More info<br><a class="detail" href="${data.url}" target="_blank">Yelp<div></div>`
 
             let images = document.getElementById("images")
             if (data.photos.length) {
@@ -204,8 +207,8 @@
                                     </div>`
               })
             }
+            window.location.replace(window.location.origin + '#business-details')
           })
-        window.location.replace(window.location.origin + '#business-header')
       }
 
       function sortTable(n) {
