@@ -13,7 +13,7 @@
           Business Search
         </div>
         <div class="description">
-          Fill our the form to get businesses near you!
+          Fill out the form to get businesses near you!
         </div>
       </div>
       <div class="form">
@@ -142,7 +142,7 @@
                 imageCell.innerHTML = `<img src=${businesses[i].image_url} alt="business-image" height="120" width="120"/>`
                 businessCell.innerHTML = `<span class="business-cell" onClick=getBusiness("${businesses[i].id}")>${businesses[i].name}</span>`
                 ratingCell.innerHTML = `<span class="rating-cell">${String(businesses[i].rating)}</span>`
-                distanceCell.innerHTML = `<span class="distance-cell">${String((businesses[i].distance / 1600).toFixed(2))}</span>`
+                distanceCell.innerHTML = `<span class="distance-cell">${String((businesses[i].distance / 1609).toFixed(2))}</span>`
               }
             }
             window.location.replace(window.location.origin + '#results')
@@ -203,7 +203,7 @@
               data.photos.forEach((p, i) => {
                 images.innerHTML += `<div>
                                       <img class="image" src=${p} alt="business-image" width="220" />
-                                      <span>Photo ${i}<span>
+                                      <span>Photo ${i+1}<span>
                                     </div>`
               })
             }
