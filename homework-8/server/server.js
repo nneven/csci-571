@@ -16,10 +16,17 @@
 
 // [START app]
 const express = require('express');
+const path = require('path');
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello from App Engine!');
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/api', (req, res) => {
+  res.send({ message: 'Hello' });
+});
+
+app.get('*', async (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 // Listen to the App Engine-specified port, or 8080 otherwise
