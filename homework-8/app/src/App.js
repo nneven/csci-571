@@ -1,25 +1,39 @@
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Routes, Route, Outlet, Link } from 'react-router-dom'
+import { Container, Row, Col, Button } from 'react-bootstrap'
+import Search from './pages/Search'
+import Bookings from './pages/Bookings'
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='background' style={{ backgroundImage: 'url(/city.jpg)'}}>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route index element={<Search />} />
+          <Route path='bookings' element={<Bookings />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
 
-export default App;
+function Layout() {
+  return (
+      <Container>
+        <Row>
+          <Col>
+            <div className='nav-bar'>
+              <Button className='nav-button' variant='outline-dark' size='sm' style={window.location.pathname === '/' ? {border: '2px solid', borderRadius: '12px'} : null}><Link to='/'>Search</Link></Button>
+              <Button className='nav-button' variant='outline-dark' size='sm' style={window.location.pathname === '/bookings' ? {border: '2px solid', borderRadius: '12px'} : null}><Link to='/bookings'>My Bookings</Link></Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Outlet />
+          </Col>
+        </Row>
+      </Container>
+  )
+}
