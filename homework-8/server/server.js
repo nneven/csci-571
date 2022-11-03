@@ -41,6 +41,19 @@ app.get('/yelp', (req, res) => {
   })
 });
 
+app.get('/google', (req, res) => {
+  console.log(req.query)
+  axios.get(decodeURI(req.query.url))
+  .then(response => {
+    res.send(response.data)
+    console.log(response.data)
+  })
+  .catch(error => {
+    res.send(error)
+    console.log(error)
+  })
+});
+
 app.get('*', async (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
