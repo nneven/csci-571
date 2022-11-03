@@ -26,9 +26,12 @@ export default function Search() {
           console.log(error)
         })
     } else {
-      await axios.get(`https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=AIzaSyDZQNW6Ut1G3ySELQPBUsI6JpdatAUyxvo`)
+      await axios.get('https://csci-571-363723.wl.r.appspot.com/google', {
+        params: {
+          url: `https://maps.googleapis.com/maps/api/geocode/json?address=${location}&key=AIzaSyDZQNW6Ut1G3ySELQPBUsI6JpdatAUyxvo`
+        }
+      })
         .then(response => {
-          console.log(response)
           const loc = response.data.results[0].geometry.location
           latitude = String(loc.lat)
           longitude = String(loc.lng)
@@ -38,26 +41,21 @@ export default function Search() {
         })
     }
 
-    let request = `term=${keyword}&latitude=${latitude}&longitude=${longitude}&category=${category}`
-    if (distance) request += `&radius=${parseInt(distance) * 1600}`
     await axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
       params: {
-        url: `https://api.yelp.com/v3/businesses/search?${request}`
+        url: `https://api.yelp.com/v3/businesses/search?term=${keyword}&latitude=${latitude}&longitude=${longitude}&category=${category}&radius=${parseInt(distance * 1609.34)}&limit=10`
       }
     })
       .then(response => {
-        if (response.data.error || response.data.businesses.length === 0) return
+        if (!response.data.businesses) return
         else {
           const result = response.data.businesses.map(business => {
             return {
+              id: business.id,
               name: business.name,
               image: business.image_url,
               rating: business.rating,
-              reviewCount: business.review_count,
-              address: business.location.display_address.join(', '),
-              phone: business.display_phone,
-              categories: business.categories.map(category => category.title).join(', '),
-              url: business.url
+              distance: business.distance / 1609.34,
             }
           })
           setSearchResult(result)
@@ -73,12 +71,13 @@ export default function Search() {
     setCategory('Default')
     setLocation('')
     setAutoDetect(false)
+    setSearchResult([])
   }
 
-  function SearchTable() {
+  function SearchTable({ searchResult }) {
     return (
       <Table striped>
-        <thead>
+        <thead className="text-center">
           <tr>
             <th>#</th>
             <th>Image</th>
@@ -87,14 +86,16 @@ export default function Search() {
             <th>Distance (miles)</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Image</td>
-            <td>The Donut Man</td>
-            <td>4</td>
-            <td>0</td>
-          </tr>
+        <tbody className="text-center">
+          {searchResult.map((business, index) => (
+            <tr key={business.id}>
+              <td style={{fontWeight: 600}}>{index + 1}</td>
+              <td><img src={business.image} alt={business.name} height="120" width="120"/></td>
+              <td>{business.name}</td>
+              <td>{business.rating}</td>
+              <td>{Math.round(business.distance)}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     )
@@ -115,12 +116,12 @@ export default function Search() {
         <Form.Group as={Col}>
           <Form.Label>Category<span className="star">*</span></Form.Label>
           <Form.Select value={category} onChange={e => setCategory(e.target.value)} required>
-            <option>Default</option>
-            <option>Arts and Entertainment</option>
-            <option>Health and  Medical</option>
-            <option>Hotels and Travel</option>
-            <option>Food</option>
-            <option>Professional Services</option>
+            <option value="all">Default</option>
+            <option value="arts">Arts and Entertainment</option>
+            <option value="health">Health and  Medical</option>
+            <option value="hotelstravel">Hotels and Travel</option>
+            <option value="food">Food</option>
+            <option value="professional">Professional Services</option>
           </Form.Select>
         </Form.Group>
       </Row>
@@ -140,7 +141,7 @@ export default function Search() {
         </Col>
       </Row>
     </Form>
-    {searchResult.length > 0 && <SearchTable />}
+    {searchResult.length > 0 && <SearchTable searchResult={searchResult}/>}
     </>
   )
 }

@@ -4,37 +4,32 @@
   background-size: 140%;
   background-position: bottom center;
   background-repeat: no-repeat;
+  overflow: auto;
 }
 
-.container {
-  height: 100vh;
-  width: 100vw;
-}
-
-.nav-bar {
+.nav-bar.col-md-auto {
   height: 48px;
-  margin-top: 16px;
-  float: right;
-  left: 32px;
-  position: relative;
+  margin-top: 8px;
+  margin-left: auto;
 }
 
-.nav-bar > button {
+.nav-bar.col-md-auto button {
   border: none;
   padding: 8px;
-  margin-right: 32px;
+  margin-right: 8px;
   font-weight: 500;
 }
 
-.nav-bar > button:hover {
+.nav-bar.col-md-auto button:hover {
   background-color: white;
+  --bs-btn-hover-color: none;
 }
 
-.nav-bar > button:active {
+.nav-bar.col-md-auto button:active {
   --bs-btn-active-bg: white;
 }
 
-.nav-bar > button > a {
+.nav-bar.col-md-auto button a {
   color: black;
   text-decoration: none;
 }

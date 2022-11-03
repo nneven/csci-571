@@ -4,7 +4,13 @@ form.search {
   margin: auto;
   margin-top: 64px;
   background-color: white;
-  border-radius: 16px;
+  border-radius: 1rem;
+}
+
+.table {
+  margin-top: 64px;
+  background-color: white;
+  border-radius: 1rem;
 }
 
 .star {
