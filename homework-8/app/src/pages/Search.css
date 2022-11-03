@@ -4,4 +4,9 @@ form.search {
   margin: auto;
   margin-top: 64px;
   background-color: white;
+  border-radius: 16px;
+}
+
+.star {
+  color: red;
 }

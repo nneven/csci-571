@@ -9,7 +9,7 @@ export default function App() {
   return (
     <div className='background' style={{ backgroundImage: 'url(/city.jpg)'}}>
       <Routes>
-        <Route path='/' element={<Layout />}>
+        <Route path='/search' element={<Layout />}>
           <Route index element={<Search />} />
           <Route path='bookings' element={<Bookings />} />
         </Route>
@@ -24,7 +24,7 @@ function Layout() {
         <Row>
           <Col>
             <div className='nav-bar'>
-              <Button className='nav-button' variant='outline-dark' size='sm' style={window.location.pathname === '/' ? {border: '2px solid', borderRadius: '12px'} : null}><Link to='/'>Search</Link></Button>
+              <Button className='nav-button' variant='outline-dark' size='sm' style={window.location.pathname === '/search' ? {border: '2px solid', borderRadius: '12px'} : null}><Link to='/search'>Search</Link></Button>
               <Button className='nav-button' variant='outline-dark' size='sm' style={window.location.pathname === '/bookings' ? {border: '2px solid', borderRadius: '12px'} : null}><Link to='/bookings'>My Bookings</Link></Button>
             </div>
           </Col>
