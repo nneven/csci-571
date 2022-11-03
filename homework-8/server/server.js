@@ -17,16 +17,16 @@
 // [START app]
 const express = require('express');
 const axios = require('axios')
-const bodyParser = require('body-parser');
+const cors = require('cors');
 const path = require('path');
 const app = express();
 
-app.use(bodyParser.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/yelp', (req, res) => {
-  console.log(req.body)
-  axios.get(req.body.url, {
+  console.log(req.query)
+  axios.get(decodeURI(req.query.url), {
     headers: {
       Authorization: 'Bearer VnkIbhsZy69FOh3SIvmLg2Ee1EntTZ7503IvzLYGE83f4vPykJ3BW883p9U3wpb6WAvULCN2MD0nql8XEhzXyNMia0RMbNMJ_FPGW0tOEdT0x0HloEa1FeuGu-M0Y3Yx'
     }
