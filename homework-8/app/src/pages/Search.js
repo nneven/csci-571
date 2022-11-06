@@ -10,6 +10,7 @@ export default function Search() {
   const [location, setLocation] = useState('')
   const [autoDetect, setAutoDetect] = useState(false)
   const [searchResult, setSearchResult] = useState([])
+  const [business, setBusiness] = useState()
 
   async function submit(event) {
     event.preventDefault()
@@ -65,13 +66,14 @@ export default function Search() {
     )
   }
 
-  function clear(event) {
+  function clear() {
     setKeyword('')
     setDistance(10)
     setCategory('Default')
     setLocation('')
     setAutoDetect(false)
     setSearchResult([])
+    setBusiness()
   }
 
   function SearchTable({ searchResult }) {
@@ -91,7 +93,7 @@ export default function Search() {
             <tr key={business.id}>
               <td style={{fontWeight: 600}}>{index + 1}</td>
               <td><img src={business.image} alt={business.name} height="120" width="120"/></td>
-              <td>{business.name}</td>
+              <td className="business-name-cell" onClick={e => setBusiness(business.id)}>{business.name}</td>
               <td>{business.rating}</td>
               <td>{Math.round(business.distance)}</td>
             </tr>
@@ -101,47 +103,65 @@ export default function Search() {
     )
   }
 
+  async function Business ({ business }) {
+    await axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
+      params: {
+        url: `https://api.yelp.com/v3/businesses/${business}`
+      }
+    })
+      .then(response => {
+        console.log(response.data)
+      })
+
+    return (
+      <div>
+        <h1>BUSINESS</h1>
+      </div>
+    )
+  }
+
   return (
     <>
-    <Form className="search" onSubmit={submit}>
-      <Form.Group className="mb-3">
-        <Form.Label>Keyword<span className="star">*</span></Form.Label>
-        <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required />
-      </Form.Group>
-      <Row className="mb-3">
-        <Form.Group as={Col}>
-          <Form.Label>Distance</Form.Label>
-          <Form.Control type="number" value={distance} onChange={e => setDistance(e.target.value)}/>
+      <Form className="search" onSubmit={submit}>
+        <Form.Group className="mb-3">
+          <Form.Label>Keyword<span className="star">*</span></Form.Label>
+          <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required />
         </Form.Group>
-        <Form.Group as={Col}>
-          <Form.Label>Category<span className="star">*</span></Form.Label>
-          <Form.Select value={category} onChange={e => setCategory(e.target.value)} required>
-            <option value="all">Default</option>
-            <option value="arts">Arts and Entertainment</option>
-            <option value="health">Health and  Medical</option>
-            <option value="hotelstravel">Hotels and Travel</option>
-            <option value="food">Food</option>
-            <option value="professional">Professional Services</option>
-          </Form.Select>
+        <Row className="mb-3">
+          <Form.Group as={Col}>
+            <Form.Label>Distance</Form.Label>
+            <Form.Control type="number" value={distance} onChange={e => setDistance(e.target.value)}/>
+          </Form.Group>
+          <Form.Group as={Col}>
+            <Form.Label>Category<span className="star">*</span></Form.Label>
+            <Form.Select value={category} onChange={e => setCategory(e.target.value)} required>
+              <option value="all">Default</option>
+              <option value="arts">Arts and Entertainment</option>
+              <option value="health">Health and  Medical</option>
+              <option value="hotelstravel">Hotels and Travel</option>
+              <option value="food">Food</option>
+              <option value="professional">Professional Services</option>
+            </Form.Select>
+          </Form.Group>
+        </Row>
+        <Form.Group className="mb-3">
+          <Form.Label>Location<span className="star">*</span></Form.Label>
+          <Form.Control type="text" value={location} onChange={e => setLocation(e.target.value)} required disabled={autoDetect}/>
         </Form.Group>
-      </Row>
-      <Form.Group className="mb-3">
-        <Form.Label>Location<span className="star">*</span></Form.Label>
-        <Form.Control type="text" value={location} onChange={e => setLocation(e.target.value)} required disabled={autoDetect}/>
-      </Form.Group>
-      <Form.Group className="mb-3">
-        <Form.Check type="checkbox" label="Auto-detect my location" value={autoDetect} onChange={e => setAutoDetect(e.target.checked)} />
-      </Form.Group>
-      <Row className="mb-3 justify-content-center">
-        <Col md="auto">
-          <Button className="form-button" variant="danger" type="submit">Submit</Button>
-        </Col>
-        <Col md="auto">
-          <Button className="form-button" variant="primary" type="reset" onClick={clear}>Clear</Button>
-        </Col>
-      </Row>
-    </Form>
-    {searchResult.length > 0 && <SearchTable searchResult={searchResult}/>}
+        <Form.Group className="mb-3">
+          <Form.Check type="checkbox" label="Auto-detect my location" value={autoDetect} onChange={e => {setAutoDetect(e.target.checked); setLocation('')}} />
+        </Form.Group>
+        <Row className="mb-3 justify-content-center">
+          <Col md="auto">
+            <Button className="form-button" variant="danger" type="submit">Submit</Button>
+          </Col>
+          <Col md="auto">
+            <Button className="form-button" variant="primary" type="reset" onClick={clear}>Clear</Button>
+          </Col>
+        </Row>
+      </Form>
+      {searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
+      {business && <Business business={business}/>}
     </>
   )
 }

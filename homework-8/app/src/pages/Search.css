@@ -11,6 +11,7 @@ form.search {
   margin-top: 64px;
   background-color: white;
   border-radius: 1rem;
+  cursor: pointer;
 }
 
 .star {
