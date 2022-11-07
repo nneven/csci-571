@@ -1,0 +1,16 @@
+.bookings-header {
+  text-align: center;
+}
+
+.bookings-table {
+  width: 80%;
+  margin: auto;
+  margin-top: 64px;
+  background-color: white;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.no-reservations {
+  color: red;
+}

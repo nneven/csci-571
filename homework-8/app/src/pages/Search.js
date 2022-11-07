@@ -1,8 +1,8 @@
 import './Search.css'
 import React, { useState } from 'react'
 import axios from 'axios'
-import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Carousel } from 'react-bootstrap'
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Modal, Carousel } from 'react-bootstrap'
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
 
 export default function Search() {
   const [keyword, setKeyword] = useState('')
@@ -13,6 +13,7 @@ export default function Search() {
   const [searchResult, setSearchResult] = useState([])
   const [business, setBusiness] = useState()
   const [reviews, setReviews] = useState()
+  const [reservation, setReservation] = useState(false)
 
   async function submit(event) {
     event.preventDefault()
@@ -86,6 +87,23 @@ export default function Search() {
       .then(response => {
         setReviews(response.data)
       })
+  }
+
+  function reserve(event) {
+    event.preventDefault()
+    console.log(business.name)
+    console.log(event.target[0].value)
+    console.log(event.target[1].value)
+    console.log(event.target[2].value + ":" + event.target[3].value)
+    axios.get('https://csci-571-363723.wl.r.appspot.com/reservation', {
+      params: {
+        business: business.name,
+        email: event.target[0].value,
+        date: event.target[1].value,
+        time: event.target[2].value + ":" + event.target[3].value
+      }
+    })
+    alert("Reservation created!")
   }
 
   function clear() {
@@ -167,7 +185,59 @@ export default function Search() {
                 </Col>
               </Row>
               <Row>
-                <Button className="reserve-button" variant="danger">Reserve Now</Button>
+                <Button className="reserve-button" variant="danger" onClick={e => setReservation(true)}>Reserve Now</Button>
+                <Modal show={reservation} onHide={e => setReservation(false)}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Reservation form</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <h5>{business.name}</h5>
+                    <Form onSubmit={reserve}>
+                      <Form.Group>
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control type="email" required />
+                      </Form.Group>
+                      <Form.Group as={Col}>
+                        <Form.Label>Date</Form.Label>
+                        <Form.Control type="date" required />
+                      </Form.Group>
+                      <Form.Label>Time</Form.Label>
+                      <Row className="reservation-time">
+                        <Form.Group as={Col} md="auto">
+                          <Form.Select required>
+                            <option>10</option>
+                            <option>11</option>
+                            <option>12</option>
+                            <option>13</option>
+                            <option>14</option>
+                            <option>15</option>
+                            <option>16</option>
+                            <option>17</option>
+                          </Form.Select>
+                        </Form.Group>
+                        :
+                        <Form.Group as={Col} md="auto">
+                          <Form.Select required>
+                            <option>00</option>
+                            <option>15</option>
+                            <option>30</option>
+                            <option>45</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Row>
+                      <Row className="justify-content-md-center">
+                      <Col md="auto">
+                      <Button className="submit-reservation" variant="danger" type="submit">Submit</Button>
+                      </Col>
+                      </Row>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="dark" onClick={e => setReservation(false)}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </Row>
               <Row>
                 <div className="share-on">
@@ -284,8 +354,8 @@ export default function Search() {
           </Col>
         </Row>
       </Form>
-      {searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
-      {business && <Business business={business} reviews={reviews}/>}
+      {!!searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
+      {business && <Business business={business} reviews={reviews} />}
       <div className="bottom"/>
     </>
   )

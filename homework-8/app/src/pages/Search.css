@@ -22,6 +22,7 @@ form.search {
   margin: auto;
   margin-top: 64px;
   padding-top: 32px;
+  padding-bottom: 16px;
   text-align: center;
   background-color: white;
   width: 60%;
@@ -102,4 +103,20 @@ h3 {
 
 .bottom {
   height: 32px;
+}
+
+body > div.fade.modal.show > div > div > div.modal-body > h5 {
+  text-align: center;
+}
+
+.modal-content .form-label {
+  margin-bottom: 0;
+}
+
+.submit-reservation {
+  margin-top: 16px;
+}
+
+.reservation-time select {
+  padding-right: 64px;
 }
