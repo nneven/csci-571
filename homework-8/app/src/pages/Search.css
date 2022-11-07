@@ -120,3 +120,28 @@ body > div.fade.modal.show > div > div > div.modal-body > h5 {
 .reservation-time select {
   padding-right: 64px;
 }
+
+.reservation-time img {
+  width: 32px;
+  height: 20px;
+  margin: auto;
+  margin-left: 0;
+  padding-left: 0;
+}
+
+.share-on img {
+  width: 32px;
+  height: 32px;
+  margin-left: 8px;
+  vertical-align: bottom;
+}
+
+.no-results {
+  margin: auto;
+  margin-top: 64px;
+  text-align: center;
+  color: red;
+  background-color: white;
+  width: 40%;
+  border-radius: 16px;
+}

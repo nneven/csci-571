@@ -15,8 +15,8 @@ export default function App() {
         <Container fluid>
           <Row>
             <Col className='nav-bar' md="auto">
-              <Button className='nav-button' variant='outline-dark' size='sm' style={{border: '2px solid', borderRadius: '12px', borderColor: page !== 'search' && 'transparent'}} onClick={e => setPage('search')}><Link to='/search'>Search</Link></Button>
-              <Button className='nav-button' variant='outline-dark' size='sm' style={{border: '2px solid', borderRadius: '12px', borderColor: page !== 'bookings' && 'transparent'}} onClick={e => setPage('bookings')}><Link to='/bookings'>My Bookings</Link></Button>
+              <Link to='/search'><Button className='nav-button' variant='outline-dark' size='sm' style={{border: '2px solid', borderRadius: '12px', borderColor: page !== 'search' && 'transparent'}} onClick={e => setPage('search')}>Search</Button></Link>
+              <Link to='/bookings'><Button className='nav-button' variant='outline-dark' size='sm' style={{border: '2px solid', borderRadius: '12px', borderColor: page !== 'bookings' && 'transparent'}} onClick={e => setPage('bookings')}>My Bookings</Button></Link>
             </Col>
           </Row>
         </Container>

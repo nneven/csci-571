@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/heading-has-content */
 import './Search.css'
 import React, { useState } from 'react'
 import axios from 'axios'
@@ -14,6 +15,7 @@ export default function Search() {
   const [business, setBusiness] = useState()
   const [reviews, setReviews] = useState()
   const [reservation, setReservation] = useState(false)
+  const [noResult, setNoResult] = useState(false)
 
   async function submit(event) {
     event.preventDefault()
@@ -52,6 +54,7 @@ export default function Search() {
     })
       .then(response => {
         if (!response.data.businesses) return
+        if (!response.data.businesses.length) setNoResult(true)
         else {
           const result = response.data.businesses.map(business => {
             return {
@@ -114,6 +117,7 @@ export default function Search() {
     setAutoDetect(false)
     setSearchResult([])
     setBusiness()
+    setNoResult(false)
   }
 
   function SearchTable({ searchResult }) {
@@ -130,10 +134,10 @@ export default function Search() {
         </thead>
         <tbody className="text-center">
           {searchResult.map((business, index) => (
-            <tr key={business.id}>
+            <tr key={business.id} onClick={e => getBusiness(business.id)}>
               <td style={{fontWeight: 600}}>{index + 1}</td>
               <td><img src={business.image} alt={business.name} height="120" width="120"/></td>
-              <td className="business-name-cell" onClick={e => getBusiness(business.id)}>{business.name}</td>
+              <td className="business-name-cell">{business.name}</td>
               <td>{business.rating}</td>
               <td>{Math.round(business.distance)}</td>
             </tr>
@@ -224,11 +228,12 @@ export default function Search() {
                             <option>45</option>
                           </Form.Select>
                         </Form.Group>
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFVBfLTkAoPpYjW_5UkzsygMAaCzJGsrZ_pA&usqp=CAU" alt="clock"/>
                       </Row>
                       <Row className="justify-content-md-center">
-                      <Col md="auto">
-                      <Button className="submit-reservation" variant="danger" type="submit">Submit</Button>
-                      </Col>
+                        <Col md="auto">
+                          <Button className="submit-reservation" variant="danger" type="submit">Submit</Button>
+                        </Col>
                       </Row>
                     </Form>
                   </Modal.Body>
@@ -242,6 +247,8 @@ export default function Search() {
               <Row>
                 <div className="share-on">
                   Share on:
+                  <a href={`https://twitter.com/intent/tweet?text=${encodeURI(`Check ${business.name} on Yelp. ${business.url}`)}`} target="_blank" rel="noreferrer"><img src="https://www.iconpacks.net/icons/2/free-icon-twitter-logo-2429.png" alt="twitter" /></a>
+                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURI(business.url)}`} target="_blank" rel="noreferrer"><img src="https://www.iconpacks.net/icons/2/free-icon-facebook-logo-2428.png" alt="facebook" /></a>
                 </div>
               </Row>
               <Row>
@@ -343,7 +350,7 @@ export default function Search() {
           <Form.Control type="text" value={location} onChange={e => setLocation(e.target.value)} required disabled={autoDetect}/>
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Check type="checkbox" label="Auto-detect my location" value={autoDetect} onChange={e => {setAutoDetect(e.target.checked); setLocation('')}} />
+          <Form.Check type="checkbox" label="Auto-detect my location" value={autoDetect} onClick={e => {setAutoDetect(e.target.checked); setLocation('')}} />
         </Form.Group>
         <Row className="mb-3 justify-content-center">
           <Col md="auto">
@@ -356,6 +363,7 @@ export default function Search() {
       </Form>
       {!!searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
       {business && <Business business={business} reviews={reviews} />}
+      {noResult && <h3 className="no-results">No results available</h3>}
       <div className="bottom"/>
     </>
   )
