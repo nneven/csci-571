@@ -12,5 +12,6 @@
 }
 
 .no-reservations {
+  margin-top: 64px;
   color: red;
 }
