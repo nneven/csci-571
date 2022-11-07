@@ -1,6 +1,6 @@
 import './Search.css'
 import React, { useState } from 'react'
-import { Row, Col, Form, Button, Table } from 'react-bootstrap'
+import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Carousel } from 'react-bootstrap'
 import axios from 'axios'
 
 export default function Search() {
@@ -66,6 +66,17 @@ export default function Search() {
     )
   }
 
+  async function getBusiness(id) {
+    await axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
+      params: {
+        url: `https://api.yelp.com/v3/businesses/${id}`
+      }
+    })
+      .then(response => {
+        setBusiness(response.data)
+      })
+  }
+
   function clear() {
     setKeyword('')
     setDistance(10)
@@ -93,7 +104,7 @@ export default function Search() {
             <tr key={business.id}>
               <td style={{fontWeight: 600}}>{index + 1}</td>
               <td><img src={business.image} alt={business.name} height="120" width="120"/></td>
-              <td className="business-name-cell" onClick={e => setBusiness(business.id)}>{business.name}</td>
+              <td className="business-name-cell" onClick={e => getBusiness(business.id)}>{business.name}</td>
               <td>{business.rating}</td>
               <td>{Math.round(business.distance)}</td>
             </tr>
@@ -103,19 +114,77 @@ export default function Search() {
     )
   }
 
-  async function Business ({ business }) {
-    await axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
-      params: {
-        url: `https://api.yelp.com/v3/businesses/${business}`
-      }
-    })
-      .then(response => {
-        console.log(response.data)
-      })
-
+  function Business({ business }) {
+    console.log(business)
     return (
-      <div>
-        <h1>BUSINESS</h1>
+      <div className="business-card">
+        <h3 className="arrow" onClick={e => setBusiness(null)}>←</h3>
+        <h3>{business.name}</h3>
+        <Tabs
+          defaultActiveKey="business"
+          id="business-tabs"
+          className="mb-3"
+          
+        >
+          <Tab eventKey="business" title="Business details">
+            <Container className="business-details">
+              <Row>
+                <Col>
+                  <h5>Address</h5>
+                  <p>{business.location.display_address.join(', ')}</p>
+                </Col>
+                <Col>
+                  <h5>Category</h5>
+                  <p>{business.categories.map(category => category.title).join(', ')}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h5>Phone</h5>
+                  <p>{business.display_phone}</p>
+                </Col>
+                <Col>
+                  <h5>Price range</h5>
+                  <p>{business.price}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <h5>Status</h5>
+                  <p>{business.is_closed ? 'Closed' : 'Open'}</p>
+                </Col>
+                <Col>
+                  <h5>Visit yelp for more</h5>
+                  <a href={business.url} target="_blank" rel="noreferrer">Business link</a>
+                </Col>
+              </Row>
+              <Row>
+                <Button className="reserve-button" variant="danger">Reserve Now</Button>
+              </Row>
+              <Row>
+                <div className="share-on">
+                  Share on:
+                </div>
+              </Row>
+              <Row>
+              <Carousel variant="dark">
+                {business.photos.map(photo => (
+                  <Carousel.Item>
+                    <img
+                      src={photo}
+                      alt="business-photos"
+                    />
+                  </Carousel.Item>
+                ))}
+              </Carousel>
+              </Row>
+            </Container>
+          </Tab>
+          <Tab eventKey="map" title="Map location">
+          </Tab>
+          <Tab eventKey="reviews" title="Reviews">
+          </Tab>
+        </Tabs>
       </div>
     )
   }

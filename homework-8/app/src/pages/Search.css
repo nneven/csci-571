@@ -17,3 +17,72 @@ form.search {
 .star {
   color: red;
 }
+
+.business-card {
+  margin: auto;
+  margin-top: 64px;
+  padding: 8px;
+  text-align: center;
+  padding: 32px;
+  background-color: white;
+  width: 60%;
+}
+
+.nav.nav-tabs {
+  margin-top: 16px;
+  font-weight: 500;
+  background-color: #F9D85F;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-tabs {
+  --bs-nav-tabs-border-width: 1px;
+  --bs-nav-tabs-border-color: #dee2e6;
+  --bs-nav-tabs-border-radius: 0.375rem;
+  --bs-nav-tabs-link-hover-border-color: #F9D85F #F9D85F #F9D85F;
+  --bs-nav-tabs-link-active-bg: #F9D85F;
+  --bs-nav-tabs-link-active-color: black;
+  --bs-nav-tabs-link-active-border-color: #F9D85F #F9D85F black #F9D85F;
+  border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+}
+
+.nav-tabs .nav-link {
+  color: gray;
+}
+
+.nav-item {
+  margin: 0 1rem;
+}
+
+.arrow {
+  float: left;
+  position: relative;
+  top: -24px;
+}
+
+h3 {
+  cursor: pointer;
+}
+
+.business-details {
+  margin-top: 24px;
+}
+
+.business-details .row {
+  padding: 8px;
+}
+
+.reserve-button {
+  margin: auto;
+  width: 128px;
+}
+
+.carousel img {
+  max-width: 100%;
+  max-height: 480px;
+}
+
+.carousel-indicators {
+  display: none;
+}
