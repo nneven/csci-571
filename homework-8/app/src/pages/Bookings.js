@@ -1,7 +1,7 @@
 import './Bookings.css'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Modal, Carousel } from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 
 export default function Bookings() {
   const [bookings, setBookings] = useState([])
