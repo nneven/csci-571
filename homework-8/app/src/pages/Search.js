@@ -1,7 +1,8 @@
 import './Search.css'
 import React, { useState } from 'react'
-import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Carousel } from 'react-bootstrap'
 import axios from 'axios'
+import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Carousel } from 'react-bootstrap'
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 export default function Search() {
   const [keyword, setKeyword] = useState('')
@@ -11,6 +12,7 @@ export default function Search() {
   const [autoDetect, setAutoDetect] = useState(false)
   const [searchResult, setSearchResult] = useState([])
   const [business, setBusiness] = useState()
+  const [reviews, setReviews] = useState()
 
   async function submit(event) {
     event.preventDefault()
@@ -75,6 +77,15 @@ export default function Search() {
       .then(response => {
         setBusiness(response.data)
       })
+    
+    await axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
+      params: {
+        url: `https://api.yelp.com/v3/businesses/${id}/reviews`
+      }
+    })
+      .then(response => {
+        setReviews(response.data)
+      })
   }
 
   function clear() {
@@ -114,17 +125,14 @@ export default function Search() {
     )
   }
 
-  function Business({ business }) {
-    console.log(business)
+  function Business({ business, reviews }) {
+    console.log(reviews)
     return (
       <div className="business-card">
         <h3 className="arrow" onClick={e => setBusiness(null)}>←</h3>
         <h3>{business.name}</h3>
         <Tabs
           defaultActiveKey="business"
-          id="business-tabs"
-          className="mb-3"
-          
         >
           <Tab eventKey="business" title="Business details">
             <Container className="business-details">
@@ -181,8 +189,55 @@ export default function Search() {
             </Container>
           </Tab>
           <Tab eventKey="map" title="Map location">
+            <LoadScript
+              googleMapsApiKey="AIzaSyDZQNW6Ut1G3ySELQPBUsI6JpdatAUyxvo"
+            >
+              <GoogleMap className="map"
+                mapContainerStyle={{
+                  width: '100%',
+                  height: '640px'
+                }}
+                center={{
+                  lat: business.coordinates.latitude,
+                  lng: business.coordinates.longitude
+                }}
+                zoom={14}
+              >
+                <Marker
+                  position={{
+                    lat: business.coordinates.latitude,
+                    lng: business.coordinates.longitude
+                  }}
+                />
+              </GoogleMap>
+            </LoadScript>
           </Tab>
           <Tab eventKey="reviews" title="Reviews">
+            <Container className="reviews">
+              {reviews && reviews.reviews.map((review, i) => (
+                <Row style={ i % 2 === 0 ? {backgroundColor: '#F2F2F2'} : null}>
+                  <Col>
+                    <div className="review">
+                      <div className="review-header">
+                        <div className="review-user">
+                          {review.user.name}
+                        </div>
+                        <div className="review-rating">Rating: {review.rating}/5</div>
+                      </div>
+                      <br/>
+                      <div className="review-content">
+                        {review.text}
+                      </div>
+                      <br/>
+                      <div className="review-time">
+                        {review.time_created.split(' ')[0]}
+                      </div>
+                      <br/>
+                    </div>
+                  </Col>
+                </Row>
+              ))}
+            </Container>
           </Tab>
         </Tabs>
       </div>
@@ -230,7 +285,8 @@ export default function Search() {
         </Row>
       </Form>
       {searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
-      {business && <Business business={business}/>}
+      {business && <Business business={business} reviews={reviews}/>}
+      <div className="bottom"/>
     </>
   )
 }
