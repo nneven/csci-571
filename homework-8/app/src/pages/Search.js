@@ -4,9 +4,12 @@ import React, { useRef, useState } from 'react'
 import axios from 'axios'
 import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Modal, Carousel } from 'react-bootstrap'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
-import {AsyncTypeahead } from 'react-bootstrap-typeahead';
+import {AsyncTypeahead } from 'react-bootstrap-typeahead'
+import { Link } from 'react-router-dom'
+
 
 export default function Search() {
+  const [page, setPage] = useState('search')
   const [keyword, setKeyword] = useState('')
   const [distance, setDistance] = useState(10)
   const [category, setCategory] = useState('Default')
@@ -349,84 +352,98 @@ export default function Search() {
 
   return (
     <>
-      <Form className="search" onSubmit={submit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Keyword<span className="star">*</span></Form.Label>
-          {/* <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required /> */}
-          <AsyncTypeahead
-            ref={ref}
-            id="keyword"
-            type="text"
-            value={keyword}
-            onChange={setKeyword}
-            isLoading={isLoading}
-            onSearch={(query) => {
-              setKeyword(query)
-              setIsLoading(true)
-              axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
-                params: {
-                  url: `https://api.yelp.com/v3/autocomplete?text=${query}`,
-                }
-              })
-                .then(response => {
-                  let results = []
-                  for (const category of response.data.categories) {
-                    results.push(category.title)
-                  }
-                  for (const term of response.data.terms) {
-                    results.push(term.text)
-                  }
-                  setOptions(results)
-                  setIsLoading(false)
-                  console.log(results)
-                })
-            }}
-            options={options}
-            renderMenuItemChildren={(option, props) => (
-              <div>
-                {option}
-              </div>
-            )}
-            inputProps={{ required: true }}
-          />
-        </Form.Group>
-        <Row className="mb-3">
-          <Form.Group as={Col}>
-            <Form.Label>Distance</Form.Label>
-            <Form.Control type="number" value={distance} onChange={e => setDistance(e.target.value)}/>
-          </Form.Group>
-          <Form.Group as={Col}>
-            <Form.Label>Category<span className="star">*</span></Form.Label>
-            <Form.Select value={category} onChange={e => setCategory(e.target.value)} required>
-              <option value="all">Default</option>
-              <option value="arts">Arts and Entertainment</option>
-              <option value="health">Health and  Medical</option>
-              <option value="hotelstravel">Hotels and Travel</option>
-              <option value="food">Food</option>
-              <option value="professional">Professional Services</option>
-            </Form.Select>
-          </Form.Group>
-        </Row>
-        <Form.Group className="mb-3">
-          <Form.Label>Location<span className="star">*</span></Form.Label>
-          <Form.Control type="text" value={location} onChange={e => setLocation(e.target.value)} required disabled={autoDetect}/>
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Check type="checkbox" label="Auto-detect my location" value={autoDetect} onClick={e => {setAutoDetect(e.target.checked); setLocation('')}} />
-        </Form.Group>
-        <Row className="mb-3 justify-content-center">
-          <Col md="auto">
-            <Button className="form-button" variant="danger" type="submit">Submit</Button>
-          </Col>
-          <Col md="auto">
-            <Button className="form-button" variant="primary" type="reset" onClick={clear}>Clear</Button>
+      <Container fluid>
+        <Row>
+          <Col className='nav-bar' md="auto">
+            <Link to='/search'><Button className='nav-button' variant='outline-dark' size='sm' style={{border: '2px solid', borderRadius: '12px', borderColor: page !== 'search' && 'transparent'}} onClick={e => setPage('search')}>Search</Button></Link>
+            <Link to='/bookings'><Button className='nav-button' variant='outline-dark' size='sm' style={{border: '2px solid', borderRadius: '12px', borderColor: page !== 'bookings' && 'transparent'}} onClick={e => setPage('bookings')}>My Bookings</Button></Link>
           </Col>
         </Row>
-      </Form>
-      {!!searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
-      {business && <Business business={business} reviews={reviews} />}
-      {noResult && <h3 className="no-results">No results available</h3>}
-      <div className="bottom"/>
+      </Container>
+      <Container>
+        <Row>
+          <Col>
+            <Form className="search" onSubmit={submit}>
+              <Form.Group className="mb-3">
+                <Form.Label>Keyword<span className="star">*</span></Form.Label>
+                {/* <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required /> */}
+                <AsyncTypeahead
+                  ref={ref}
+                  id="keyword"
+                  type="text"
+                  value={keyword}
+                  onChange={setKeyword}
+                  isLoading={isLoading}
+                  onSearch={(query) => {
+                    setKeyword(query)
+                    setIsLoading(true)
+                    axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
+                      params: {
+                        url: `https://api.yelp.com/v3/autocomplete?text=${query}`,
+                      }
+                    })
+                      .then(response => {
+                        let results = []
+                        for (const category of response.data.categories) {
+                          results.push(category.title)
+                        }
+                        for (const term of response.data.terms) {
+                          results.push(term.text)
+                        }
+                        setOptions(results)
+                        setIsLoading(false)
+                        console.log(results)
+                      })
+                  }}
+                  options={options}
+                  renderMenuItemChildren={(option, props) => (
+                    <div>
+                      {option}
+                    </div>
+                  )}
+                  inputProps={{ required: true }}
+                />
+              </Form.Group>
+              <Row className="mb-3">
+                <Form.Group as={Col}>
+                  <Form.Label>Distance</Form.Label>
+                  <Form.Control type="number" value={distance} onChange={e => setDistance(e.target.value)}/>
+                </Form.Group>
+                <Form.Group as={Col}>
+                  <Form.Label>Category<span className="star">*</span></Form.Label>
+                  <Form.Select value={category} onChange={e => setCategory(e.target.value)} required>
+                    <option value="all">Default</option>
+                    <option value="arts">Arts and Entertainment</option>
+                    <option value="health">Health and  Medical</option>
+                    <option value="hotelstravel">Hotels and Travel</option>
+                    <option value="food">Food</option>
+                    <option value="professional">Professional Services</option>
+                  </Form.Select>
+                </Form.Group>
+              </Row>
+              <Form.Group className="mb-3">
+                <Form.Label>Location<span className="star">*</span></Form.Label>
+                <Form.Control type="text" value={location} onChange={e => setLocation(e.target.value)} required disabled={autoDetect}/>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Check type="checkbox" label="Auto-detect my location" value={autoDetect} onClick={e => {setAutoDetect(e.target.checked); setLocation('')}} />
+              </Form.Group>
+              <Row className="mb-3 justify-content-center">
+                <Col md="auto">
+                  <Button className="form-button" variant="danger" type="submit">Submit</Button>
+                </Col>
+                <Col md="auto">
+                  <Button className="form-button" variant="primary" type="reset" onClick={clear}>Clear</Button>
+                </Col>
+              </Row>
+            </Form>
+            {!!searchResult.length && !business && <SearchTable searchResult={searchResult}/>}
+            {business && <Business business={business} reviews={reviews} />}
+            {noResult && <h3 className="no-results">No results available</h3>}
+            <div className="bottom"/>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
