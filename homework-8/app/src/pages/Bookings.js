@@ -10,6 +10,7 @@ export default function Bookings() {
     axios.get('https://csci-571-363723.wl.r.appspot.com/reservations')
       .then(res => {
         setBookings(res.data)
+        console.log(res.data)
       })
   }, [])
 

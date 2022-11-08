@@ -103,7 +103,7 @@ export default function Search() {
         const reservations = response.data
         const reserved = reservations.some(reservation => reservation.business === business.name)
         setReserved(reserved)
-        console.log(business.name)
+        console.log(business.name, reserved)
       })
     }
 
@@ -186,11 +186,11 @@ export default function Search() {
               <Row>
                 <Col>
                   <h5>Address</h5>
-                  <p>{business.location.display_address.join(', ')}</p>
+                  <p>{business.location.display_address.join(' ')}</p>
                 </Col>
                 <Col>
                   <h5>Category</h5>
-                  <p>{business.categories.map(category => category.title).join(', ')}</p>
+                  <p>{business.categories.map(category => category.title).join(' | ')}</p>
                 </Col>
               </Row>
               <Row>
@@ -206,7 +206,7 @@ export default function Search() {
               <Row>
                 <Col>
                   <h5>Status</h5>
-                  <p>{business.is_closed ? 'Closed' : 'Open'}</p>
+                  <p style={business.is_closed ? {color: "red"} : {color: "green"}}>{business.is_closed ? 'Closed' : 'Open Now'}</p>
                 </Col>
                 <Col>
                   <h5>Visit yelp for more</h5>
@@ -350,6 +350,7 @@ export default function Search() {
   return (
     <>
       <Form className="search" onSubmit={submit}>
+        <h5>Business search</h5>
         <Form.Group className="mb-3">
           <Form.Label>Keyword<span className="star">*</span></Form.Label>
           {/* <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required /> */}
@@ -393,7 +394,7 @@ export default function Search() {
         <Row className="mb-3">
           <Form.Group as={Col}>
             <Form.Label>Distance</Form.Label>
-            <Form.Control type="number" value={distance} onChange={e => setDistance(e.target.value)}/>
+            <Form.Control type="number" value={distance} min="1" max="25" onChange={e => setDistance(e.target.value)}/>
           </Form.Group>
           <Form.Group as={Col}>
             <Form.Label>Category<span className="star">*</span></Form.Label>

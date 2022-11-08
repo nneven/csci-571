@@ -150,3 +150,7 @@ body > div.fade.modal.show > div > div > div.modal-body > h5 {
   width: 164px;
   margin: auto;
 }
+
+.search h5 {
+  text-align: center;
+}
