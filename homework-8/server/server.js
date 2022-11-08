@@ -21,6 +21,8 @@ const cors = require('cors');
 const path = require('path');
 const app = express();
 
+let reservations = [];
+
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -52,6 +54,28 @@ app.get('/google', (req, res) => {
     res.send(error)
     console.log(error)
   })
+});
+
+app.get('/reservation', (req, res) => {
+  console.log(req.query)
+  const reservation = {
+    business: decodeURI(req.query.business),
+    email: decodeURI(req.query.email),
+    date: decodeURI(req.query.date),
+    time: decodeURI(req.query.time)
+  }
+  reservations.push(reservation)
+  res.send(reservations)
+});
+
+app.get('/reservations', (req, res) => {
+  res.send(reservations)
+});
+
+app.get('/cancel', (req, res) => {
+  console.log(req.query)
+  reservations = reservations.splice(req.query.index, 1)
+  res.send(reservations)
 });
 
 app.get('*', async (req, res) => {
