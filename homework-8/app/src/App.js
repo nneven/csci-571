@@ -7,7 +7,7 @@ import Search from './pages/Search'
 import Bookings from './pages/Bookings'
 
 export default function App() {
-  const [page, setPage] = useState('')
+  const [page, setPage] = useState('search')
 
   function Layout() {
     return (
