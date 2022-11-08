@@ -35,8 +35,8 @@ export default function App() {
     <div className='background' style={{ backgroundImage: 'url(/city.jpg)'}}>
       <Routes>
         {/* <Route path='/' element={<Layout />}> */}
-          <Route path='search' element={<Search />} />
-          <Route path='bookings' element={<Bookings />} />
+          <Route path='/search' element={<Search />} />
+          <Route path='/bookings' element={<Bookings />} />
         {/* </Route> */}
       </Routes>
     </div>
