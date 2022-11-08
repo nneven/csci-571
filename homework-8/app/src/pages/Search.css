@@ -145,3 +145,8 @@ body > div.fade.modal.show > div > div > div.modal-body > h5 {
   width: 40%;
   border-radius: 16px;
 }
+
+.cancel-button {
+  width: 164px;
+  margin: auto;
+}

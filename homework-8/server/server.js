@@ -24,6 +24,7 @@ const app = express();
 let reservations = [];
 
 app.use(cors());
+// app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/yelp', (req, res) => {
@@ -74,7 +75,7 @@ app.get('/reservations', (req, res) => {
 
 app.get('/cancel', (req, res) => {
   console.log(req.query)
-  reservations = reservations.splice(req.query.index, 1)
+  reservations.splice(req.query.index, 1)
   res.send(reservations)
 });
 

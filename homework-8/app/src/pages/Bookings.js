@@ -13,6 +13,14 @@ export default function Bookings() {
       })
   }, [])
 
+  function cancel(index) {
+    axios.get(`https://csci-571-363723.wl.r.appspot.com/cancel?index=${index}`)
+      .then(res => {
+        setBookings(res.data)
+      })
+    alert("Reservation canceled!")
+  }
+
   return (
     <>
       {!!bookings.length && <h3 className="bookings-header">List of your reservations</h3>}
@@ -31,11 +39,11 @@ export default function Bookings() {
           {bookings.map((booking, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
-              <td>{booking.businessName}</td>
+              <td>{booking.business}</td>
               <td>{booking.date}</td>
               <td>{booking.time}</td>
               <td>{booking.email}</td>
-              <td><img src="https://cdn-icons-png.flaticon.com/512/2891/2891491.png" alt="trash" width="16"/></td>
+              <td><img src="https://cdn-icons-png.flaticon.com/512/2891/2891491.png" alt="trash" width="16" onClick={e => cancel(index)}/></td>
             </tr>
           ))}
         </tbody>

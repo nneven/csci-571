@@ -16,6 +16,7 @@ export default function Search() {
   const [business, setBusiness] = useState()
   const [reviews, setReviews] = useState()
   const [reservation, setReservation] = useState(false)
+  const [reserved, setReserved] = useState(false)
   const [noResult, setNoResult] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [options, setOptions] = useState([])
@@ -77,12 +78,14 @@ export default function Search() {
   }
 
   async function getBusiness(id) {
+    let business = {}
     await axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
       params: {
         url: `https://api.yelp.com/v3/businesses/${id}`
       }
     })
       .then(response => {
+        business = response.data
         setBusiness(response.data)
       })
     
@@ -94,14 +97,18 @@ export default function Search() {
       .then(response => {
         setReviews(response.data)
       })
-  }
+
+    await axios.get('https://csci-571-363723.wl.r.appspot.com/reservations')
+      .then(response => {
+        const reservations = response.data
+        const reserved = reservations.some(reservation => reservation.business === business.name)
+        setReserved(reserved)
+        console.log(business.name)
+      })
+    }
 
   function reserve(event) {
     event.preventDefault()
-    console.log(business.name)
-    console.log(event.target[0].value)
-    console.log(event.target[1].value)
-    console.log(event.target[2].value + ":" + event.target[3].value)
     axios.get('https://csci-571-363723.wl.r.appspot.com/reservation', {
       params: {
         business: business.name,
@@ -111,6 +118,19 @@ export default function Search() {
       }
     })
     alert("Reservation created!")
+    setReservation(false)
+    setReserved(true)
+  }
+
+  function cancel(name) {
+    axios.get('https://csci-571-363723.wl.r.appspot.com/reservations')
+      .then(response => {
+        const reservations = response.data
+        const index = reservations.findIndex(reservation => reservation.business === name)
+        axios.get(`https://csci-571-363723.wl.r.appspot.com/cancel?index=${index}`)
+      })
+    alert("Reservation canceled!")
+    setReserved(false)
   }
 
   function clear() {
@@ -194,7 +214,8 @@ export default function Search() {
                 </Col>
               </Row>
               <Row>
-                <Button className="reserve-button" variant="danger" onClick={e => setReservation(true)}>Reserve Now</Button>
+                {reserved && <Button className="cancel-button" variant="primary" onClick={e => cancel(business.name)}>Cancel reservation</Button>}
+                {!reserved && <Button className="reserve-button" variant="danger" onClick={e => setReservation(true)}>Reserve Now</Button>}
                 <Modal show={reservation} onHide={e => setReservation(false)}>
                   <Modal.Header closeButton>
                     <Modal.Title>Reservation form</Modal.Title>
