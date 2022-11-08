@@ -1,9 +1,10 @@
 /* eslint-disable jsx-a11y/heading-has-content */
 import './Search.css'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import axios from 'axios'
 import { Container, Row, Col, Form, Button, Table, Tab, Tabs, Modal, Carousel } from 'react-bootstrap'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
+import {AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 export default function Search() {
   const [keyword, setKeyword] = useState('')
@@ -16,6 +17,9 @@ export default function Search() {
   const [reviews, setReviews] = useState()
   const [reservation, setReservation] = useState(false)
   const [noResult, setNoResult] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [options, setOptions] = useState([])
+  const ref = useRef();
 
   async function submit(event) {
     event.preventDefault()
@@ -118,6 +122,7 @@ export default function Search() {
     setSearchResult([])
     setBusiness()
     setNoResult(false)
+    ref.current.clear()
   }
 
   function SearchTable({ searchResult }) {
@@ -326,7 +331,43 @@ export default function Search() {
       <Form className="search" onSubmit={submit}>
         <Form.Group className="mb-3">
           <Form.Label>Keyword<span className="star">*</span></Form.Label>
-          <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required />
+          {/* <Form.Control type="text" value={keyword} onChange={e => setKeyword(e.target.value)} required /> */}
+          <AsyncTypeahead
+            ref={ref}
+            id="keyword"
+            type="text"
+            value={keyword}
+            onChange={setKeyword}
+            isLoading={isLoading}
+            onSearch={(query) => {
+              setKeyword(query)
+              setIsLoading(true)
+              axios.get('https://csci-571-363723.wl.r.appspot.com/yelp', {
+                params: {
+                  url: `https://api.yelp.com/v3/autocomplete?text=${query}`,
+                }
+              })
+                .then(response => {
+                  let results = []
+                  for (const category of response.data.categories) {
+                    results.push(category.title)
+                  }
+                  for (const term of response.data.terms) {
+                    results.push(term.text)
+                  }
+                  setOptions(results)
+                  setIsLoading(false)
+                  console.log(results)
+                })
+            }}
+            options={options}
+            renderMenuItemChildren={(option, props) => (
+              <div>
+                {option}
+              </div>
+            )}
+            inputProps={{ required: true }}
+          />
         </Form.Group>
         <Row className="mb-3">
           <Form.Group as={Col}>
