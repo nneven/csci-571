@@ -229,7 +229,7 @@ export default function Search() {
                       </Form.Group>
                       <Form.Group as={Col}>
                         <Form.Label>Date</Form.Label>
-                        <Form.Control type="date" required />
+                        <Form.Control type="date" min={new Date().toISOString().split('T')[0]} required />
                       </Form.Group>
                       <Form.Label>Time</Form.Label>
                       <Row className="reservation-time">
@@ -417,10 +417,10 @@ export default function Search() {
         </Form.Group>
         <Row className="mb-3 justify-content-center">
           <Col md="auto">
-            <Button className="form-button" variant="danger" type="submit">Submit</Button>
+            <Button className="form-button-submit" variant="danger" type="submit">Submit</Button>
           </Col>
           <Col md="auto">
-            <Button className="form-button" variant="primary" type="reset" onClick={clear}>Clear</Button>
+            <Button className="form-button-clear" variant="primary" type="reset" onClick={clear}>Clear</Button>
           </Col>
         </Row>
       </Form>

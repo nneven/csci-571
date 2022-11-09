@@ -154,3 +154,11 @@ body > div.fade.modal.show > div > div > div.modal-body > h5 {
 .search h5 {
   text-align: center;
 }
+
+.form-button-submit:hover {
+  background-color: darkred;
+}
+
+.form-button-clear:hover {
+  background-color: darkblue;
+}
