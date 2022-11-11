@@ -15,3 +15,19 @@
   margin-top: 64px;
   color: red;
 }
+
+@media screen and (max-width: 400px) {
+  .bookings-table {
+    width: 110%;
+  }
+
+  .bookings-header {
+    margin-top: 16px;
+  }
+
+  .trash-icon {
+    width: 16px !important;
+    height: 16px !important; 
+  }
+
+}

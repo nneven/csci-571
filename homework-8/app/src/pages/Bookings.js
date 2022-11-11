@@ -44,7 +44,7 @@ export default function Bookings() {
               <td>{booking.date}</td>
               <td>{booking.time}</td>
               <td>{booking.email}</td>
-              <td><img src="https://cdn-icons-png.flaticon.com/512/2891/2891491.png" alt="trash" width="16" onClick={e => cancel(index)}/></td>
+              <td><img className="trash-icon" src="https://cdn-icons-png.flaticon.com/512/2891/2891491.png" alt="trash" width="16" onClick={e => cancel(index)}/></td>
             </tr>
           ))}
         </tbody>

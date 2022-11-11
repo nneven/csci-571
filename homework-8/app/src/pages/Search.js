@@ -108,17 +108,21 @@ export default function Search() {
     }
 
   function reserve(event) {
-    event.preventDefault()
-    axios.get('https://csci-571-363723.wl.r.appspot.com/reservation', {
-      params: {
-        business: business.name,
-        email: event.target[0].value,
-        date: event.target[1].value,
-        time: event.target[2].value + ":" + event.target[3].value
-      }
-    })
-    alert("Reservation created!")
-    setReservation(false)
+    if (event.currentTarget.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+    } else {
+      axios.get('https://csci-571-363723.wl.r.appspot.com/reservation', {
+        params: {
+          business: business.name,
+          email: event.target[0].value,
+          date: event.target[1].value,
+          time: event.target[2].value + ":" + event.target[3].value
+        }
+      })
+      alert("Reservation created!")
+      setReservation(false)
+    }
     setReserved(true)
   }
 
@@ -183,7 +187,7 @@ export default function Search() {
         >
           <Tab eventKey="business" title="Business details">
             <Container className="business-details">
-              <Row>
+              <Row xs={1}>
                 <Col>
                   <h5>Address</h5>
                   <p>{business.location.display_address.join(' ')}</p>
@@ -193,7 +197,7 @@ export default function Search() {
                   <p>{business.categories.map(category => category.title).join(' | ')}</p>
                 </Col>
               </Row>
-              <Row>
+              <Row xs={1}>
                 <Col>
                   <h5>Phone</h5>
                   <p>{business.display_phone}</p>
@@ -203,7 +207,7 @@ export default function Search() {
                   <p>{business.price}</p>
                 </Col>
               </Row>
-              <Row>
+              <Row xs={1}>
                 <Col>
                   <h5>Status</h5>
                   <p style={business.is_closed ? {color: "red"} : {color: "green"}}>{business.is_closed ? 'Closed' : 'Open Now'}</p>
@@ -222,19 +226,26 @@ export default function Search() {
                   </Modal.Header>
                   <Modal.Body>
                     <h5>{business.name}</h5>
-                    <Form onSubmit={reserve}>
+                    <Form noValidate validated={reserved} onSubmit={reserve}>
                       <Form.Group>
                         <Form.Label>Email address</Form.Label>
                         <Form.Control type="email" required />
+                        <Form.Control.Feedback class="invalid-feedback d-block" type="invalid">
+                          Email is required
+                        </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group as={Col}>
                         <Form.Label>Date</Form.Label>
-                        <Form.Control type="date" min={new Date().toISOString().split('T')[0]} required />
+                        <Form.Control type="date" min={new Date(Date.now() - 86400000).toISOString().split('T')[0]} required />
+                        <Form.Control.Feedback class="invalid-feedback" type="invalid">
+                          Date is required
+                        </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Label>Time</Form.Label>
                       <Row className="reservation-time">
                         <Form.Group as={Col} md="auto">
                           <Form.Select required>
+                            <option></option>
                             <option>10</option>
                             <option>11</option>
                             <option>12</option>
@@ -244,15 +255,18 @@ export default function Search() {
                             <option>16</option>
                             <option>17</option>
                           </Form.Select>
+                          <Form.Control.Feedback class="invalid-feedback" type="invalid" />
                         </Form.Group>
                         :
                         <Form.Group as={Col} md="auto">
                           <Form.Select required>
+                            <option></option>
                             <option>00</option>
                             <option>15</option>
                             <option>30</option>
                             <option>45</option>
                           </Form.Select>
+                          <Form.Control.Feedback type="invalid" />
                         </Form.Group>
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFVBfLTkAoPpYjW_5UkzsygMAaCzJGsrZ_pA&usqp=CAU" alt="clock"/>
                       </Row>
