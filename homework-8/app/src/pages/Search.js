@@ -187,7 +187,7 @@ export default function Search() {
         >
           <Tab eventKey="business" title="Business details">
             <Container className="business-details">
-              <Row xs={1}>
+              <Row xs={1} sm={2}>
                 <Col>
                   <h5>Address</h5>
                   <p>{business.location.display_address.join(' ')}</p>
@@ -197,7 +197,7 @@ export default function Search() {
                   <p>{business.categories.map(category => category.title).join(' | ')}</p>
                 </Col>
               </Row>
-              <Row xs={1}>
+              <Row xs={1} sm={2}>
                 <Col>
                   <h5>Phone</h5>
                   <p>{business.display_phone}</p>
@@ -207,7 +207,7 @@ export default function Search() {
                   <p>{business.price}</p>
                 </Col>
               </Row>
-              <Row xs={1}>
+              <Row xs={1} sm={2}>
                 <Col>
                   <h5>Status</h5>
                   <p style={business.is_closed ? {color: "red"} : {color: "green"}}>{business.is_closed ? 'Closed' : 'Open Now'}</p>
