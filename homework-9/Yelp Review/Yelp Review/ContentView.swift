@@ -9,12 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
         
-    @State private var keyword = ""
-    @State private var distance = "10"
-    @State private var category = "Default"
-    @State private var location = ""
-    @State private var autoDetect = false
-    @State private var validForm = false
+    @State var keyword = ""
+    @State var distance = "10"
+    @State var category = "all"
+    @State var location = ""
+    @State var autoDetect = false
+    @State var submitted = false
+    @State var results = [Business]()
 
     var body: some View {
         NavigationView {
@@ -76,6 +77,19 @@ struct ContentView: View {
                         }
                         Section {
                             Text("Results").font(.title).bold()
+                            if submitted && results.isEmpty {
+                                Text("No results available").foregroundColor(.red)
+                            } else {
+                                List(results) { business in
+                                    HStack {
+                                        Text(String(business.id))
+                                        Image(business.image)
+                                        Text(business.name)
+                                        Text(String(business.rating))
+                                        Text(String(business.distance))
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -91,11 +105,36 @@ struct ContentView: View {
     }
     
     func submit() {
-        print("submit()")
+        print("submit()", keyword, distance, category, location)
+        // API CALL
+        
+        submitted = true
     }
     
     func clear() {
-        print("clear()")
+        keyword = ""
+        distance = "10"
+        category = "all"
+        location = ""
+        autoDetect = false
+        submitted = false
+        results = [Business]()
+    }
+}
+
+struct Business: Identifiable {
+    var id: Int
+    var name: String
+    var rating: Float
+    var distance: Float
+    var image: String
+    
+    init(id: Int, name: String, rating: Float, distance: Float, image: String) {
+        self.id = id
+        self.name = name
+        self.rating = rating
+        self.distance = distance
+        self.image = image
     }
 }
 
