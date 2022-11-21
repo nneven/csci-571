@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct SearchView: View {
         
     @State var keyword = ""
     @State var distance = "10"
@@ -96,7 +96,7 @@ struct ContentView: View {
                 .navigationTitle("Business Search")
             }
             .toolbar {
-                NavigationLink(destination: Reservations(), label: {
+                NavigationLink(destination: ReservationView(), label: {
                     Image(systemName: "calendar.badge.clock")
                 })
             }
@@ -140,6 +140,6 @@ struct Business: Identifiable {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        SearchView()
     }
 }

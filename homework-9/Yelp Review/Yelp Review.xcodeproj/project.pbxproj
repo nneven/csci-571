@@ -8,19 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		B345BEB2292B0DB7009FC7DE /* Yelp_ReviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345BEB1292B0DB7009FC7DE /* Yelp_ReviewApp.swift */; };
-		B345BEB4292B0DB7009FC7DE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345BEB3292B0DB7009FC7DE /* ContentView.swift */; };
+		B345BEB4292B0DB7009FC7DE /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345BEB3292B0DB7009FC7DE /* SearchView.swift */; };
 		B345BEB6292B0DB8009FC7DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B345BEB5292B0DB8009FC7DE /* Assets.xcassets */; };
 		B345BEB9292B0DB8009FC7DE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B345BEB8292B0DB8009FC7DE /* Preview Assets.xcassets */; };
-		B345BEC0292B13F0009FC7DE /* Reservations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345BEBF292B13F0009FC7DE /* Reservations.swift */; };
+		B345BEC0292B13F0009FC7DE /* ReservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345BEBF292B13F0009FC7DE /* ReservationView.swift */; };
+		B372AEF6292B51BA0091954B /* BusinessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B372AEF5292B51BA0091954B /* BusinessView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B345BEAE292B0DB7009FC7DE /* Yelp Review.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Yelp Review.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B345BEB1292B0DB7009FC7DE /* Yelp_ReviewApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Yelp_ReviewApp.swift; sourceTree = "<group>"; };
-		B345BEB3292B0DB7009FC7DE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B345BEB3292B0DB7009FC7DE /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		B345BEB5292B0DB8009FC7DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B345BEB8292B0DB8009FC7DE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		B345BEBF292B13F0009FC7DE /* Reservations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reservations.swift; sourceTree = "<group>"; };
+		B345BEBF292B13F0009FC7DE /* ReservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationView.swift; sourceTree = "<group>"; };
+		B372AEF5292B51BA0091954B /* BusinessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +56,9 @@
 			isa = PBXGroup;
 			children = (
 				B345BEB1292B0DB7009FC7DE /* Yelp_ReviewApp.swift */,
-				B345BEB3292B0DB7009FC7DE /* ContentView.swift */,
-				B345BEBF292B13F0009FC7DE /* Reservations.swift */,
+				B345BEB3292B0DB7009FC7DE /* SearchView.swift */,
+				B372AEF5292B51BA0091954B /* BusinessView.swift */,
+				B345BEBF292B13F0009FC7DE /* ReservationView.swift */,
 				B345BEB5292B0DB8009FC7DE /* Assets.xcassets */,
 				B345BEB7292B0DB8009FC7DE /* Preview Content */,
 			);
@@ -140,8 +143,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B345BEB4292B0DB7009FC7DE /* ContentView.swift in Sources */,
-				B345BEC0292B13F0009FC7DE /* Reservations.swift in Sources */,
+				B372AEF6292B51BA0091954B /* BusinessView.swift in Sources */,
+				B345BEB4292B0DB7009FC7DE /* SearchView.swift in Sources */,
+				B345BEC0292B13F0009FC7DE /* ReservationView.swift in Sources */,
 				B345BEB2292B0DB7009FC7DE /* Yelp_ReviewApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

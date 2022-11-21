@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Reservations: View {
+struct ReservationView: View {
     var body: some View {
         VStack {
             Text("No bookings found")
@@ -19,6 +19,6 @@ struct Reservations: View {
 
 struct Reservations_Previews: PreviewProvider {
     static var previews: some View {
-        Reservations()
+        ReservationView()
     }
 }

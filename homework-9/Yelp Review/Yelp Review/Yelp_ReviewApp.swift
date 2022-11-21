@@ -11,7 +11,7 @@ import SwiftUI
 struct Yelp_ReviewApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SearchView()
         }
     }
 }
