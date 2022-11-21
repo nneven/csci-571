@@ -125,16 +125,16 @@ struct ContentView: View {
 struct Business: Identifiable {
     var id: Int
     var name: String
+    var image: String
     var rating: Float
     var distance: Float
-    var image: String
     
-    init(id: Int, name: String, rating: Float, distance: Float, image: String) {
+    init(id: Int, name: String, image: String, rating: Float, distance: Float) {
         self.id = id
         self.name = name
+        self.image = image
         self.rating = rating
         self.distance = distance
-        self.image = image
     }
 }
 
