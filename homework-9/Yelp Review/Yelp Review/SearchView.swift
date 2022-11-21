@@ -33,12 +33,12 @@ struct SearchView: View {
                             }
                             HStack {
                                 Picker("Category:", selection: $category) {
-                                    Text("Default")
-                                    Text("Arts and Entertainment")
-                                    Text("Health and Medical")
-                                    Text("Hotels and Travel")
-                                    Text("Food")
-                                    Text("Proffesional Services")
+                                    Text("Default").tag("all")
+                                    Text("Arts and Entertainment").tag("arts")
+                                    Text("Health and Medical").tag("health")
+                                    Text("Hotels and Travel").tag("hotelstravel")
+                                    Text("Food").tag("food")
+                                    Text("Proffesional Services").tag("professional")
                                 }
                                 .foregroundColor(.gray)
                             }
