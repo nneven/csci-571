@@ -16,6 +16,7 @@ struct SearchView: View {
     @State var autoDetect = false
     @State var submitted = false
     @State var results = [Business]()
+    @State var noResults = false
 
     var body: some View {
         NavigationView {
@@ -41,6 +42,7 @@ struct SearchView: View {
                                     Text("Proffesional Services").tag("professional")
                                 }
                                 .foregroundColor(.gray)
+                                .pickerStyle(.menu)
                             }
                             if !autoDetect {
                                 HStack {
@@ -77,24 +79,34 @@ struct SearchView: View {
                         }
                         Section {
                             Text("Results").font(.title).bold()
-                            if submitted && results.isEmpty {
+                            if (submitted && results.isEmpty && !noResults) {
+                                VStack {
+                                    ProgressView().frame(maxWidth: .infinity, alignment: .center)
+                                    Text("Please wait...").foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
+                                }
+                            } else if noResults {
                                 Text("No results available").foregroundColor(.red)
                             } else {
-                                ForEach(Array(results.enumerated()), id: \.1.id) { idx, result in
+                                 ForEach(Array(results.enumerated()), id: \.1.id) { idx, result in
                                     let image = AsyncImage(url: URL(string: result.imageUrl)) { image in
                                         image.resizable()
                                     } placeholder: {
-                                        ProgressView()
-                                    }
-                                    .frame(width: 50, height: 50)
+                                        // ProgressView()
+                                    }.frame(width: 64, height: 64).cornerRadius(8)
                                     let distance = String(Int(round(Double(result.distance) / 1609.34)))
-                                    HStack {
-                                        Text(String(idx + 1))
-                                        image
-                                        Text(result.name)
-                                        Text(String(result.rating))
-                                        Text(distance)
-                                    }
+                                     NavigationLink(destination: BusinessView(id: result.id), label: {
+                                        HStack {
+                                            Text(String(1))
+                                            Spacer()
+                                            image
+                                            Spacer()
+                                            Text(result.name).frame(maxWidth: 100).foregroundColor(.gray)
+                                            Spacer()
+                                            Text(String(result.rating)).bold()
+                                            Spacer()
+                                            Text(distance).bold()
+                                        }
+                                    })
                                 }
                             }
                         }
@@ -112,8 +124,7 @@ struct SearchView: View {
     }
     
     func submit() {
-        print("submit()", keyword, distance, category, location)
-        // API CALL
+        submitted = true
         var latitude = ""
         var longitude = ""
         if (autoDetect) {
@@ -134,7 +145,6 @@ struct SearchView: View {
                         if let loc = dict["loc"] as? String {
                             latitude = String(loc.split(separator: ",")[0])
                             longitude = String(loc.split(separator: ",")[1])
-                            print(latitude, longitude)
                             search(latitude: latitude, longitude: longitude)
                         }
                     }
@@ -170,7 +180,6 @@ struct SearchView: View {
                                         if let lng = location["lng"] as? Double {
                                             longitude = String(lng)
                                         }
-                                        print(latitude, longitude)
                                         search(latitude: latitude, longitude: longitude)
                                     }
                                 }
@@ -212,7 +221,11 @@ struct SearchView: View {
                             let decoder = JSONDecoder()
                             decoder.keyDecodingStrategy = .convertFromSnakeCase
                             results = try decoder.decode([Business].self, from: JSONSerialization.data(withJSONObject: businesses))
-                            print(results)
+                            if (results.isEmpty) {
+                                noResults = true
+                            } else {
+                                noResults = false
+                            }
                         } catch {
                             print(error)
                         }
@@ -231,6 +244,7 @@ struct SearchView: View {
         autoDetect = false
         submitted = false
         results = [Business]()
+        noResults = false
     }
 }
 

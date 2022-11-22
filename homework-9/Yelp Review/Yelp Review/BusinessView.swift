@@ -8,13 +8,15 @@
 import SwiftUI
 
 struct BusinessView: View {
+    var id: String
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text(id)
     }
 }
 
 struct BusinessView_Previews: PreviewProvider {
     static var previews: some View {
-        BusinessView()
+        BusinessView(id: "")
     }
 }
