@@ -59,8 +59,8 @@ struct SearchView: View {
                                         .padding(.horizontal, 16)
                                         .padding()
                                 }
-                                .background(RoundedRectangle(cornerRadius: 8).fill(keyword.isEmpty || location.isEmpty ? .gray : .red))
-                                .disabled(keyword.isEmpty || location.isEmpty)
+                                .background(RoundedRectangle(cornerRadius: 8).fill(keyword.isEmpty || (location.isEmpty && !autoDetect) ? .gray : .red))
+                                .disabled(keyword.isEmpty || (location.isEmpty && !autoDetect))
                                 .buttonStyle(BorderlessButtonStyle())
                                 Spacer().frame(width: 40)
                                 Button(action: clear) {
@@ -80,13 +80,20 @@ struct SearchView: View {
                             if submitted && results.isEmpty {
                                 Text("No results available").foregroundColor(.red)
                             } else {
-                                List(results) { business in
+                                ForEach(Array(results.enumerated()), id: \.1.id) { idx, result in
+                                    let image = AsyncImage(url: URL(string: result.imageUrl)) { image in
+                                        image.resizable()
+                                    } placeholder: {
+                                        ProgressView()
+                                    }
+                                    .frame(width: 50, height: 50)
+                                    let distance = String(Int(round(Double(result.distance) / 1609.34)))
                                     HStack {
-                                        Text(String(business.id))
-                                        Image(business.image)
-                                        Text(business.name)
-                                        Text(String(business.rating))
-                                        Text(String(business.distance))
+                                        Text(String(idx + 1))
+                                        image
+                                        Text(result.name)
+                                        Text(String(result.rating))
+                                        Text(distance)
                                     }
                                 }
                             }
@@ -107,8 +114,113 @@ struct SearchView: View {
     func submit() {
         print("submit()", keyword, distance, category, location)
         // API CALL
-        
-        submitted = true
+        var latitude = ""
+        var longitude = ""
+        if (autoDetect) {
+            let url = URL(string: "https://ipinfo.io?token=41eab4d12ac318")!
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode) else {
+                    print(response!)
+                    return
+                }
+                if let data = data {
+                    let json = try? JSONSerialization.jsonObject(with: data)
+                    if let dict = json as? [String: Any] {
+                        if let loc = dict["loc"] as? String {
+                            latitude = String(loc.split(separator: ",")[0])
+                            longitude = String(loc.split(separator: ",")[1])
+                            print(latitude, longitude)
+                            search(latitude: latitude, longitude: longitude)
+                        }
+                    }
+                }
+            }
+            task.resume()
+        } else {
+            var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/google")!
+            components.queryItems = [
+                URLQueryItem(name: "url", value: "https://maps.googleapis.com/maps/api/geocode/json?address=" + location + "&key=AIzaSyDZQNW6Ut1G3ySELQPBUsI6JpdatAUyxvo")
+            ]
+            let url = URLRequest(url: components.url!)
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse,
+                    (200...299).contains(httpResponse.statusCode) else {
+                    print(response!)
+                    return
+                }
+                if let data = data {
+                    let json = try? JSONSerialization.jsonObject(with: data)
+                    if let dict = json as? [String: Any] {
+                        if let resultsArray = dict["results"] as? [Any] {
+                            if let resultsJson = resultsArray[0] as? [String: Any] {
+                                if let geometry = resultsJson["geometry"] as? [String: Any] {
+                                    if let location = geometry["location"] as? [String: Any] {
+                                        if let lat = location["lat"] as? Double {
+                                            latitude = String(lat)
+                                        }
+                                        if let lng = location["lng"] as? Double {
+                                            longitude = String(lng)
+                                        }
+                                        print(latitude, longitude)
+                                        search(latitude: latitude, longitude: longitude)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    func search(latitude: String, longitude: String) {
+        var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/yelp")!
+        let rDistance = String(Int(round(Double(distance)! * 1609.34)))
+        var queryValue = "https://api.yelp.com/v3/businesses/search?term=" + keyword
+        queryValue += "&latitude=" + latitude + "&longitude=" + longitude
+        queryValue += "&category=" + category + "&radius=" + rDistance
+        queryValue += "&limit=10"
+        components.queryItems = [
+            URLQueryItem(name: "url", value: queryValue)
+        ]
+        let url = URLRequest(url: components.url!)
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse,
+                (200...299).contains(httpResponse.statusCode) else {
+                print(response!)
+                return
+            }
+            if let data = data {
+                let json = try? JSONSerialization.jsonObject(with: data)
+                if let dict = json as? [String: Any] {
+                    if let businesses = dict["businesses"] as? [Any] {
+                        do {
+                            let decoder = JSONDecoder()
+                            decoder.keyDecodingStrategy = .convertFromSnakeCase
+                            results = try decoder.decode([Business].self, from: JSONSerialization.data(withJSONObject: businesses))
+                            print(results)
+                        } catch {
+                            print(error)
+                        }
+                    }
+                }
+            }
+        }
+        task.resume()
     }
     
     func clear() {
@@ -122,20 +234,13 @@ struct SearchView: View {
     }
 }
 
-struct Business: Identifiable {
-    var id: Int
+
+struct Business: Identifiable, Codable {
+    var id: String
     var name: String
-    var image: String
-    var rating: Float
-    var distance: Float
-    
-    init(id: Int, name: String, image: String, rating: Float, distance: Float) {
-        self.id = id
-        self.name = name
-        self.image = image
-        self.rating = rating
-        self.distance = distance
-    }
+    var imageUrl: String
+    var rating: Double
+    var distance: Double
 }
 
 struct ContentView_Previews: PreviewProvider {
