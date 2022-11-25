@@ -94,9 +94,9 @@ struct SearchView: View {
                                         // ProgressView()
                                     }.frame(width: 64, height: 64).cornerRadius(8)
                                     let distance = String(Int(round(Double(result.distance) / 1609.34)))
-                                     NavigationLink(destination: BusinessView(id: result.id), label: {
+                                     NavigationLink(destination: DetailView(id: result.id), label: {
                                         HStack {
-                                            Text(String(1))
+                                            Text(String(idx + 1)).bold()
                                             Spacer()
                                             image
                                             Spacer()
@@ -124,6 +124,7 @@ struct SearchView: View {
     }
     
     func submit() {
+        print("submit()")
         submitted = true
         var latitude = ""
         var longitude = ""
@@ -193,6 +194,7 @@ struct SearchView: View {
     }
     
     func search(latitude: String, longitude: String) {
+        print("search()")
         var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/yelp")!
         let rDistance = String(Int(round(Double(distance)! * 1609.34)))
         var queryValue = "https://api.yelp.com/v3/businesses/search?term=" + keyword
@@ -221,6 +223,7 @@ struct SearchView: View {
                             let decoder = JSONDecoder()
                             decoder.keyDecodingStrategy = .convertFromSnakeCase
                             results = try decoder.decode([Business].self, from: JSONSerialization.data(withJSONObject: businesses))
+                            print(results)
                             if (results.isEmpty) {
                                 noResults = true
                             } else {
@@ -250,11 +253,11 @@ struct SearchView: View {
 
 
 struct Business: Identifiable, Codable {
-    var id: String
-    var name: String
-    var imageUrl: String
-    var rating: Double
-    var distance: Double
+    let id: String
+    let name: String
+    let imageUrl: String
+    let rating: Double
+    let distance: Double
 }
 
 struct ContentView_Previews: PreviewProvider {

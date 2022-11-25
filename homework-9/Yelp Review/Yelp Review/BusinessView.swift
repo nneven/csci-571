@@ -8,15 +8,19 @@
 import SwiftUI
 
 struct BusinessView: View {
-    var id: String
+    var business: Detail?
     
     var body: some View {
-        Text(id)
+        if (business == nil) {
+            ProgressView()
+        } else {
+            Text(business?.name ?? "")
+        }
     }
 }
 
 struct BusinessView_Previews: PreviewProvider {
     static var previews: some View {
-        BusinessView(id: "")
+        BusinessView()
     }
 }

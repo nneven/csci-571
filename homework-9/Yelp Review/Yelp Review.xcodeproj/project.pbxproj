@@ -13,6 +13,9 @@
 		B345BEB9292B0DB8009FC7DE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B345BEB8292B0DB8009FC7DE /* Preview Assets.xcassets */; };
 		B345BEC0292B13F0009FC7DE /* ReservationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345BEBF292B13F0009FC7DE /* ReservationView.swift */; };
 		B372AEF6292B51BA0091954B /* BusinessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B372AEF5292B51BA0091954B /* BusinessView.swift */; };
+		B3E368FC292DC81F00E7573E /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E368FB292DC81F00E7573E /* DetailView.swift */; };
+		B3E368FE292DC9AB00E7573E /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E368FD292DC9AB00E7573E /* MapView.swift */; };
+		B3E36900292DC9C500E7573E /* ReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E368FF292DC9C500E7573E /* ReviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,6 +26,9 @@
 		B345BEB8292B0DB8009FC7DE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		B345BEBF292B13F0009FC7DE /* ReservationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationView.swift; sourceTree = "<group>"; };
 		B372AEF5292B51BA0091954B /* BusinessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BusinessView.swift; sourceTree = "<group>"; };
+		B3E368FB292DC81F00E7573E /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		B3E368FD292DC9AB00E7573E /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		B3E368FF292DC9C500E7573E /* ReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +67,9 @@
 				B345BEBF292B13F0009FC7DE /* ReservationView.swift */,
 				B345BEB5292B0DB8009FC7DE /* Assets.xcassets */,
 				B345BEB7292B0DB8009FC7DE /* Preview Content */,
+				B3E368FB292DC81F00E7573E /* DetailView.swift */,
+				B3E368FD292DC9AB00E7573E /* MapView.swift */,
+				B3E368FF292DC9C500E7573E /* ReviewView.swift */,
 			);
 			path = "Yelp Review";
 			sourceTree = "<group>";
@@ -144,8 +153,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B372AEF6292B51BA0091954B /* BusinessView.swift in Sources */,
+				B3E368FE292DC9AB00E7573E /* MapView.swift in Sources */,
 				B345BEB4292B0DB7009FC7DE /* SearchView.swift in Sources */,
+				B3E36900292DC9C500E7573E /* ReviewView.swift in Sources */,
 				B345BEC0292B13F0009FC7DE /* ReservationView.swift in Sources */,
+				B3E368FC292DC81F00E7573E /* DetailView.swift in Sources */,
 				B345BEB2292B0DB7009FC7DE /* Yelp_ReviewApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
