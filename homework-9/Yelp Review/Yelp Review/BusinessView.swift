@@ -14,6 +14,9 @@ func reserve() {
 struct BusinessView: View {
     var business: Detail?
     @State var reserved = false
+    @State var showReserve = false
+    @State var email = ""
+    @State private var date = Date()
     
     var body: some View {
         if (business == nil) {
@@ -82,31 +85,82 @@ struct BusinessView: View {
                     }
                 }
                 .padding([.leading, .trailing], 16)
-                Button(action: reserve) {
-                    Text(reserved ? "Cancel Reservation" : "Reserve Now")
+                Button(action: {
+                    showReserve.toggle()
+                }) {
+                    Text("Reserve Now")
                         .foregroundColor(.white)
                         .padding()
                 }
-                .background(RoundedRectangle(cornerRadius: 12).fill(reserved ? .blue : .red))
+                .background(RoundedRectangle(cornerRadius: 12).fill(.red))
+                .sheet(isPresented: $showReserve) {
+                    Form {
+                        Section {
+                            HStack {
+                                Spacer()
+                                Text("Reservation Form")
+                                    .fontWeight(.bold)
+                                    .font(.title)
+                                Spacer()
+                            }
+                        }
+                        Section {
+                            HStack {
+                                Spacer()
+                                Text(business?.name ?? "")
+                                    .fontWeight(.semibold)
+                                    .font(.title)
+                                Spacer()
+                            }
+                        }
+                        Section {
+                            HStack {
+                                Text("Email:").foregroundColor(.gray)
+                                TextField("", text: $email)
+                            }
+                            .padding([.top, .bottom], 16)
+                            HStack {
+                                Text("Date/Time:").foregroundColor(.gray)
+                                DatePicker("", selection: $date, in: Date()..., displayedComponents: [.date, .hourAndMinute])
+                            }
+                            .padding([.top, .bottom], 16)
+                            HStack {
+                                Spacer()
+                                Button(action: reserve) {
+                                    Text("Submit")
+                                        .foregroundColor(.white)
+                                        .padding(.horizontal, 16)
+                                        .padding()
+                                }
+                                .background(RoundedRectangle(cornerRadius: 12).fill(.blue))
+                                Spacer()
+                            }
+                            .padding([.top, .bottom], 16)
+                        }
+                    }
+                }
+                .background(RoundedRectangle(cornerRadius: 12).fill(.red))
                 .buttonStyle(BorderlessButtonStyle())
                 HStack {
                     Text("Share on:")
                         .bold()
-                    var facebook = "https://www.facebook.com/sharer/sharer.php?u="
-                    // facebook += (business?.url ?? "").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-                    var twitter = "https://twitter.com/intent/tweet?text="
-                    // var twitterQuery = "Check " + business?.name ?? "" + " on Yelp. " + business?.url ?? ""
-                    // twitterQuery = twitterQuery.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-                    Link(destination: URL(string: facebook)!) {
-                        Image("Facebook")
-                            .resizable()
-                            .frame(width: 50, height: 50)
+                    let facebook = (business?.url ?? "").addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                    let twitter = ("Check " + (business?.name ?? "") + " on Yelp. " + (business?.url ?? "")).addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                    if let url = URL(string: "https://www.facebook.com/sharer/sharer.php?u=\(facebook)") {
+                        Link(destination: url) {
+                            Image("Facebook")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                        }
                     }
-                    Link(destination: URL(string: twitter)!) {
-                        Image("Twitter")
-                            .resizable()
-                            .frame(width: 50, height: 50)
+                    if let url2 = URL(string: "https://twitter.com/intent/tweet?text=\(twitter)") {
+                        Link(destination: url2) {
+                            Image("Twitter")
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                        }
                     }
+
                 }
                 .padding([.top])
                 TabView {
