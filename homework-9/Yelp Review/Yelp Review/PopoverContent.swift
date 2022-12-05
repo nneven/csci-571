@@ -31,12 +31,11 @@ struct PopoverContent: View {
                                 self.keyword = result
                                 self.showPopover = false
                             }
-                            print(result)
                         }
                 }
             }
         }
-        .frame(height: 128)
+        .frame(height: 120)
         .padding()
     }
     
