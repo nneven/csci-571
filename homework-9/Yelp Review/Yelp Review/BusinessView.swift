@@ -7,16 +7,23 @@
 
 import SwiftUI
 
-func reserve() {
-    
-}
-
 struct BusinessView: View {
     var business: Detail?
     @State var reserved = false
     @State var showReserve = false
     @State var email = ""
     @State private var date = Date()
+    
+    func reserve() {
+        let reservation = Reservation(id: business?.id ?? "", name: business?.name ?? "", date: date, email: email)
+        do {
+            let json = try JSONEncoder().encode(reservation)
+            let string = String(data: json, encoding: .utf8) ?? ""
+            print(string)
+        } catch {
+            print(error)
+        }
+    }
     
     var body: some View {
         if (business == nil) {

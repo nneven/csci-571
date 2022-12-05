@@ -17,7 +17,9 @@ struct SearchView: View {
     @State var submitted = false
     @State var results = [Business]()
     @State var noResults = false
-
+    @State var showPopover = false
+    @State var suggestions: [String] = []
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -26,7 +28,19 @@ struct SearchView: View {
                         Section {
                             HStack {
                                 Text("Keyword:").foregroundColor(.gray)
-                                TextField("Required", text: $keyword)
+                                TextField("Required", text: $keyword, onEditingChanged: { (editingChanged) in
+                                    if editingChanged {
+                                        
+                                    } else {
+                                        showPopover = false
+                                    }
+                                })
+                                .onSubmit {
+                                    showPopover = true
+                                }
+                                .alwaysPopover(isPresented: $showPopover) {
+                                    PopoverContent(keyword: $keyword, showPopover: $showPopover)
+                                }
                             }
                             HStack {
                                 Text("Distance:").foregroundColor(.gray)
@@ -39,7 +53,7 @@ struct SearchView: View {
                                     Text("Health and Medical").tag("health")
                                     Text("Hotels and Travel").tag("hotelstravel")
                                     Text("Food").tag("food")
-                                    Text("Proffesional Services").tag("professional")
+                                    Text("Professional Services").tag("professional")
                                 }
                                 .foregroundColor(.gray)
                                 .pickerStyle(.menu)
@@ -119,7 +133,6 @@ struct SearchView: View {
                     Image(systemName: "calendar.badge.clock")
                 })
             }
-            
         }
     }
     
@@ -250,7 +263,6 @@ struct SearchView: View {
         noResults = false
     }
 }
-
 
 struct Business: Identifiable, Codable {
     let id: String

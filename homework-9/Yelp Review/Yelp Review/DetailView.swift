@@ -12,6 +12,7 @@ struct DetailView: View {
     var id: String
     @State var business: Detail?
     @State var reviews: [Review]?
+    // @Binding var reservation: String
     
     var body: some View {
         let _ = getBusiness()

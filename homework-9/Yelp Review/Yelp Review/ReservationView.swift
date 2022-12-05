@@ -17,6 +17,13 @@ struct ReservationView: View {
     }
 }
 
+struct Reservation: Identifiable, Codable {
+    let id: String
+    let name: String
+    let date: Date
+    let email: String
+}
+
 struct Reservations_Previews: PreviewProvider {
     static var previews: some View {
         ReservationView()
