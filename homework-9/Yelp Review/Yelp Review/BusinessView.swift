@@ -12,17 +12,44 @@ struct BusinessView: View {
     @State var reserved = false
     @State var showReserve = false
     @State var email = ""
-    @State private var date = Date()
+    @State var date = Date()
+    @State var hour = "10"
+    @State var min = "00"
     
     func reserve() {
-        let reservation = Reservation(id: business?.id ?? "", name: business?.name ?? "", date: date, email: email)
-        do {
-            let json = try JSONEncoder().encode(reservation)
-            let string = String(data: json, encoding: .utf8) ?? ""
-            print(string)
-        } catch {
-            print(error)
+        print(business?.name ?? "", email, date.formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-"), hour, min)
+        var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/reservation")!
+        components.queryItems = [
+            URLQueryItem(name: "business", value: business?.name ?? ""),
+            URLQueryItem(name: "email", value: email),
+            URLQueryItem(name: "date", value: date.formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")),
+            URLQueryItem(name: "time", value: hour + ":" + min)
+        ]
+        let url = URLRequest(url: components.url!)
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            if let error = error {
+                print(error)
+                return
+            }
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                print(response!)
+                return
+            }
+            if let data = data {
+                let json = try? JSONSerialization.jsonObject(with: data)
+                if let reservations = json as? [Any] {
+                    do {
+                        let decoder = JSONDecoder()
+                        let results = try decoder.decode([Reservation].self, from: JSONSerialization.data(withJSONObject: reservations))
+                        print(results)
+                    } catch {
+                        print(error)
+                    }
+                }
+            }
         }
+        task.resume()
     }
     
     var body: some View {
@@ -128,7 +155,34 @@ struct BusinessView: View {
                             .padding([.top, .bottom], 16)
                             HStack {
                                 Text("Date/Time:").foregroundColor(.gray)
-                                DatePicker("", selection: $date, in: Date()..., displayedComponents: [.date, .hourAndMinute])
+                                DatePicker("", selection: $date, in: Date()..., displayedComponents: [.date])
+                                    .padding(.leading, -12)
+                                HStack {
+                                    Picker("", selection: $hour) {
+                                        Text("10").tag("10")
+                                        Text("11").tag("11")
+                                        Text("12").tag("12")
+                                        Text("13").tag("13")
+                                        Text("14").tag("14")
+                                        Text("15").tag("15")
+                                        Text("16").tag("16")
+                                        Text("17").tag("17")
+                                    }
+                                    .padding(.leading, -18)
+                                    .pickerStyle(.menu)
+                                    .tint(.black)
+                                    Text(":")
+                                    Picker("", selection: $min) {
+                                        Text("00").tag("00")
+                                        Text("15").tag("15")
+                                        Text("30").tag("30")
+                                        Text("45").tag("45")
+                                    }
+                                    .padding(.leading, -32)
+                                    .pickerStyle(.menu)
+                                    .tint(.black)
+                                }
+                                .background(Color.gray.clipShape(RoundedRectangle(cornerRadius: 8)))
                             }
                             .padding([.top, .bottom], 16)
                             HStack {
