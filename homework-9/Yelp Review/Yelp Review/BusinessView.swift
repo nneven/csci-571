@@ -15,41 +15,52 @@ struct BusinessView: View {
     @State var date = Date()
     @State var hour = "10"
     @State var min = "00"
+    @State var showToast = false
+    @State var showConfirm = false
+    @State var showCancel = false
     
     func reserve() {
         print(business?.name ?? "", email, date.formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-"), hour, min)
-        var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/reservation")!
-        components.queryItems = [
-            URLQueryItem(name: "business", value: business?.name ?? ""),
-            URLQueryItem(name: "email", value: email),
-            URLQueryItem(name: "date", value: date.formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")),
-            URLQueryItem(name: "time", value: hour + ":" + min)
-        ]
-        let url = URLRequest(url: components.url!)
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                print(error)
-                return
-            }
-            guard let httpResponse = response as? HTTPURLResponse,
-                  (200...299).contains(httpResponse.statusCode) else {
-                print(response!)
-                return
-            }
-            if let data = data {
-                let json = try? JSONSerialization.jsonObject(with: data)
-                if let reservations = json as? [Any] {
-                    do {
-                        let decoder = JSONDecoder()
-                        let results = try decoder.decode([Reservation].self, from: JSONSerialization.data(withJSONObject: reservations))
-                        print(results)
-                    } catch {
-                        print(error)
+        
+        if (!email.contains("@")) {
+            showToast.toggle()
+        } else {
+            showReserve.toggle()
+            showConfirm.toggle()
+            
+            var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/reservation")!
+            components.queryItems = [
+                URLQueryItem(name: "business", value: business?.name ?? ""),
+                URLQueryItem(name: "email", value: email),
+                URLQueryItem(name: "date", value: date.formatted(date: .numeric, time: .omitted).replacingOccurrences(of: "/", with: "-")),
+                URLQueryItem(name: "time", value: hour + ":" + min)
+            ]
+            let url = URLRequest(url: components.url!)
+            let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    print(error)
+                    return
+                }
+                guard let httpResponse = response as? HTTPURLResponse,
+                      (200...299).contains(httpResponse.statusCode) else {
+                    print(response!)
+                    return
+                }
+                if let data = data {
+                    let json = try? JSONSerialization.jsonObject(with: data)
+                    if let reservations = json as? [Any] {
+                        do {
+                            let decoder = JSONDecoder()
+                            let results = try decoder.decode([Reservation].self, from: JSONSerialization.data(withJSONObject: reservations))
+                            print(results)
+                        } catch {
+                            print(error)
+                        }
                     }
                 }
             }
+            task.resume()
         }
-        task.resume()
     }
     
     var body: some View {
@@ -119,89 +130,159 @@ struct BusinessView: View {
                     }
                 }
                 .padding([.leading, .trailing], 16)
-                Button(action: {
-                    showReserve.toggle()
-                }) {
-                    Text("Reserve Now")
-                        .foregroundColor(.white)
-                        .padding()
-                }
-                .background(RoundedRectangle(cornerRadius: 12).fill(.red))
-                .sheet(isPresented: $showReserve) {
-                    Form {
-                        Section {
-                            HStack {
-                                Spacer()
-                                Text("Reservation Form")
-                                    .fontWeight(.bold)
-                                    .font(.title)
-                                Spacer()
-                            }
-                        }
-                        Section {
-                            HStack {
-                                Spacer()
-                                Text(business?.name ?? "")
-                                    .fontWeight(.semibold)
-                                    .font(.title)
-                                Spacer()
-                            }
-                        }
-                        Section {
-                            HStack {
-                                Text("Email:").foregroundColor(.gray)
-                                TextField("", text: $email)
-                            }
-                            .padding([.top, .bottom], 16)
-                            HStack {
-                                Text("Date/Time:").foregroundColor(.gray)
-                                DatePicker("", selection: $date, in: Date()..., displayedComponents: [.date])
-                                    .padding(.leading, -12)
-                                HStack {
-                                    Picker("", selection: $hour) {
-                                        Text("10").tag("10")
-                                        Text("11").tag("11")
-                                        Text("12").tag("12")
-                                        Text("13").tag("13")
-                                        Text("14").tag("14")
-                                        Text("15").tag("15")
-                                        Text("16").tag("16")
-                                        Text("17").tag("17")
-                                    }
-                                    .padding(.leading, -18)
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                    Text(":")
-                                    Picker("", selection: $min) {
-                                        Text("00").tag("00")
-                                        Text("15").tag("15")
-                                        Text("30").tag("30")
-                                        Text("45").tag("45")
-                                    }
-                                    .padding(.leading, -32)
-                                    .pickerStyle(.menu)
-                                    .tint(.black)
-                                }
-                                .background(Color.gray.clipShape(RoundedRectangle(cornerRadius: 8)))
-                            }
-                            .padding([.top, .bottom], 16)
-                            HStack {
-                                Spacer()
-                                Button(action: reserve) {
-                                    Text("Submit")
-                                        .foregroundColor(.white)
-                                        .padding(.horizontal, 16)
-                                        .padding()
-                                }
-                                .background(RoundedRectangle(cornerRadius: 12).fill(.blue))
-                                Spacer()
-                            }
-                            .padding([.top, .bottom], 16)
-                        }
+                if (!reserved) {
+                    Button(action: {
+                        showReserve.toggle()
+                    }) {
+                        Text("Reserve Now")
+                            .foregroundColor(.white)
+                            .padding()
                     }
+                    .background(RoundedRectangle(cornerRadius: 12).fill(.red))
+                    .sheet(isPresented: $showReserve) {
+                        Form {
+                            Section {
+                                HStack {
+                                    Spacer()
+                                    Text("Reservation Form")
+                                        .fontWeight(.bold)
+                                        .font(.title)
+                                    Spacer()
+                                }
+                            }
+                            Section {
+                                HStack {
+                                    Spacer()
+                                    Text(business?.name ?? "")
+                                        .fontWeight(.semibold)
+                                        .font(.title)
+                                    Spacer()
+                                }
+                            }
+                            Section {
+                                HStack {
+                                    Text("Email:").foregroundColor(.gray)
+                                    TextField("", text: $email)
+                                }
+                                .padding([.top, .bottom], 16)
+                                HStack {
+                                    Text("Date/Time:").foregroundColor(.gray)
+                                    DatePicker("", selection: $date, in: Date()..., displayedComponents: [.date])
+                                        .padding(.leading, -12)
+                                    HStack {
+                                        Picker("", selection: $hour) {
+                                            Text("10").tag("10")
+                                            Text("11").tag("11")
+                                            Text("12").tag("12")
+                                            Text("13").tag("13")
+                                            Text("14").tag("14")
+                                            Text("15").tag("15")
+                                            Text("16").tag("16")
+                                            Text("17").tag("17")
+                                        }
+                                        .padding(.leading, -18)
+                                        .pickerStyle(.menu)
+                                        .tint(.black)
+                                        Text(":")
+                                        Picker("", selection: $min) {
+                                            Text("00").tag("00")
+                                            Text("15").tag("15")
+                                            Text("30").tag("30")
+                                            Text("45").tag("45")
+                                        }
+                                        .padding(.leading, -32)
+                                        .pickerStyle(.menu)
+                                        .tint(.black)
+                                    }
+                                    .background(Color(red: 0.94, green: 0.94, blue: 0.94).clipShape(RoundedRectangle(cornerRadius: 8)))
+                                }
+                                .padding([.top, .bottom], 16)
+                                HStack {
+                                    Spacer()
+                                    Button(action: reserve) {
+                                        Text("Submit")
+                                            .foregroundColor(.white)
+                                            .padding(.horizontal, 16)
+                                            .padding()
+                                    }
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(.blue))
+                                    Spacer()
+                                }
+                                .padding([.top, .bottom], 16)
+                            }
+                        }
+                        .toast(isShowing: $showToast, text: Text("Please enter a valid email"))
+                    }
+                    .sheet(isPresented: $showConfirm) {
+                        VStack {
+                            Spacer()
+                            Text("Congratulations!")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.white)
+                                .bold()
+                            Text("You have succesfully made a reservation at " + (business?.name ?? ""))
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.white)
+                                .padding()
+                            Spacer()
+                            Button(action: {
+                                reserved = true
+                                showConfirm.toggle()
+                            }) {
+                                Text("Done")
+                                    .foregroundColor(.green)
+                                    .padding(.horizontal, 32)
+                                    .padding()
+                            }
+                            .background(RoundedRectangle(cornerRadius: 32).fill(.white))
+                        }
+                        .frame(maxWidth: .infinity)
+                        .background(Color.green)
+                    }
+                    .background(RoundedRectangle(cornerRadius: 12).fill(.red))
+                    .buttonStyle(BorderlessButtonStyle())
+                } else {
+                    Button(action: {
+                        reserved = false
+                        showCancel.toggle()
+                        
+                        var components = URLComponents(string: "https://csci-571-363723.wl.r.appspot.com/cancel")!
+                        components.queryItems = [
+                            URLQueryItem(name: "index", value: "0")
+                        ]
+                        let url = URLRequest(url: components.url!)
+                        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                            if let error = error {
+                                print(error)
+                                return
+                            }
+                            guard let httpResponse = response as? HTTPURLResponse,
+                                  (200...299).contains(httpResponse.statusCode) else {
+                                print(response!)
+                                return
+                            }
+                            if let data = data {
+                                let json = try? JSONSerialization.jsonObject(with: data)
+                                if let reservationsArray = json as? [Any] {
+                                    do {
+                                        let decoder = JSONDecoder()
+                                        let reservations = try decoder.decode([Reservation].self, from: JSONSerialization.data(withJSONObject: reservationsArray))
+                                        print(reservations)
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                            }
+                        }
+                        task.resume()
+                    }) {
+                        Text("Cancel Reservation")
+                            .foregroundColor(.white)
+                            .padding()
+                    }
+                    .background(RoundedRectangle(cornerRadius: 12).fill(.blue))
+                    .buttonStyle(BorderlessButtonStyle())
                 }
-                .background(RoundedRectangle(cornerRadius: 12).fill(.red))
-                .buttonStyle(BorderlessButtonStyle())
                 HStack {
                     Text("Share on:")
                         .bold()
@@ -247,7 +328,45 @@ struct BusinessView: View {
                 .tabViewStyle(.page(indexDisplayMode: .always))
                 Spacer()
             }
+            .toast(isShowing: $showCancel, text: Text("Your reservation is cancelled"))
         }
+    }
+}
+
+struct Toast<Presenting>: View where Presenting: View {
+    @Binding var isShowing: Bool
+    let presenting: () -> Presenting
+    let text: Text
+
+    var body: some View {
+        if self.isShowing {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.isShowing = false
+            }
+        }
+        return GeometryReader { geometry in
+            ZStack(alignment: .bottom) {
+                self.presenting()
+                VStack {
+                    self.text
+                }
+                .frame(width: geometry.size.width / 1.5,
+                       height: geometry.size.height / 8)
+                .background(Color.secondary.colorInvert())
+                .foregroundColor(Color.primary)
+                .cornerRadius(20)
+                .transition(.identity)
+                .opacity(self.isShowing ? 1 : 0)
+            }
+        }
+    }
+}
+
+extension View {
+    func toast(isShowing: Binding<Bool>, text: Text) -> some View {
+        Toast(isShowing: isShowing,
+              presenting: { self },
+              text: text)
     }
 }
 
